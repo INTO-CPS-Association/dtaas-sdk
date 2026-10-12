@@ -97,7 +97,8 @@ export const extension = defineExtension({
 - a converter, field kernel or substrate `load` is not a zero-argument
   `() => import(...)` loader;
 - two entries of one list share an identifier;
-- a navigation path is not `/<id>` or below it;
+- a navigation path is not `/<id>` or below it, or its path part has a `.` or
+  `..` segment, a backslash, or a percent-encoded `.`, `/` or `\`;
 - a contributed substrate reuses a standard id (`image`, `aec`, `mesh`,
   `video`, `embed`, `geo`, `field`);
 - a preset targets a substrate that is neither standard nor contributed.
