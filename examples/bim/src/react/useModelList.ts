@@ -107,7 +107,7 @@ function startListing(
 /**
  * The models in `directory`.
  *
- * `list` is read when a listing starts rather than being a dependency, so a
+ * `list` is read when a listing starts and is not a dependency, so a
  * host that passes a new function on every render, as it re-renders on every
  * reading, does not relist the folder and re-read every IFC file each time.
  */

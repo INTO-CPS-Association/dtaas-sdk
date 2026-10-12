@@ -6,7 +6,7 @@ scene, a React building browser, and the `bim` `DtaasExtension` that plugs
 the whole thing into a DTaaS host.
 
 It is a standalone, private package (not published) that exercises the SDK
-the way a real domain kit would — its own `package.json`, build, tests and CI
+the way a real domain kit would: its own `package.json`, build, tests and CI
 job, with the SDK installed the same way any consumer installs it: packed and
 added, never as a workspace symlink.
 
@@ -61,8 +61,8 @@ the host's router context; a bundled copy would read its own, empty one.
 
 The extension mounts at `/bim`:
 
-- `/bim` — the models list for the fallback (or `?dir=`) folder.
-- `/bim/models/<name>?dir=<folder>` — a chosen model in a folder.
+- `/bim`: the models list for the fallback (or `?dir=`) folder.
+- `/bim/models/<name>?dir=<folder>`: a chosen model in a folder.
 
 The folder shown, in order: the `?dir=` query parameter, then the
 `REACT_APP_EXT_BIM_MODELS_DIRECTORY` extension setting, then the host's
@@ -90,7 +90,9 @@ ready.
 
 ## 🔀 Departures from bim-kit 0.1.1
 
-Full list in [design §6](../../docs/superpowers/specs/2026-09-28-bim-example-design.md#6-departures-from-bim-kit-011); in short:
+Full list in
+[design §6](../../docs/superpowers/specs/2026-09-28-bim-example-design.md#6-departures-from-bim-kit-011).
+In short:
 
 - `BuildingModels`: `directory` is now required; selection is controllable
   (`selected?`, `onSelect?`, uncontrolled behaviour unchanged); an unknown
@@ -108,6 +110,6 @@ See [`CHANGELOG.md`](CHANGELOG.md) for the release notes.
 
 ## ⚖️ License
 
-Distributed under the INTO-CPS Association Public License — see
+Distributed under the INTO-CPS Association Public License. See
 [LICENSE.md](LICENSE.md). Third-party notices for the inlined
 `web-ifc.wasm` are in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).

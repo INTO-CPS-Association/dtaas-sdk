@@ -119,7 +119,7 @@ const checkDist = (bimRoot) => {
 };
 
 // Each subpath's most telling export, plus the dtaas extension validated
-// through the real SDK rather than a hand-rolled shape check.
+// through the real SDK instead of a hand-rolled shape check.
 const importScript = (bimName, sdkName) => `
 import assert from 'node:assert/strict';
 const core = await import('${bimName}');

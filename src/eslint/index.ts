@@ -75,7 +75,7 @@ const propertyRestrictions = [
 /**
  * Where an extension may reach (architecture §6.3). Spread it into a kit's
  * `eslint.config.mjs`; it uses core ESLint rules only. A later config that
- * sets the same rules replaces these options rather than merging with them;
+ * sets the same rules replaces these options and does not merge with them.
  * airbnb-base sets `no-restricted-syntax`, so spread this config after it.
  */
 const dtaasKitConfig: Linter.Config[] = [

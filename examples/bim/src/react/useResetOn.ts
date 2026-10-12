@@ -2,7 +2,7 @@
  * State that starts again from `initial` whenever `key` changes, including a
  * change back to a key seen before.
  *
- * The reset happens during render rather than in an effect, so the value for
+ * The reset happens during render and not in an effect, so the value for
  * the old key is never painted for the new one.
  */
 

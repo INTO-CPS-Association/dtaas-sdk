@@ -12,7 +12,7 @@ package adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   conversion (`./converter`), the three.js scene (`./viewer`), the React
   building browser and canvas (`./react`, `./react/canvas`), and the
   framework-free domain core (`.`, `./schema`).
-- `./dtaas`: the `bim` `DtaasExtension` — the `Buildings` page and
+- `./dtaas`: the `bim` `DtaasExtension`, with the `Buildings` page and
   navigation entry, the `ifc-guid` anchor kind, the `bim.ifc-to-glb`
   converter, the `bim.thermal-comfort` and `bim.co2` presets, and the
   `bim.room` / `bim.storey` scopes.

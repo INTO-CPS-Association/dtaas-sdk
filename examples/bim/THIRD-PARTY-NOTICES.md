@@ -17,10 +17,10 @@ installed `web-ifc` package before every build). It is inlined so that a
 consumer installs one package and serves no extra file, which is what lets
 the conversion run in the browser of whoever is looking at the model. tsup
 bundles the constant into one of the content-hashed `dist/chunk-*.js` files
-alongside the code that uses it, rather than into a fixed path; the
-declaration alone stays at `dist/converter/generated/wasm.d.ts`.
+alongside the code that uses it, not into a fixed path. The declaration
+alone stays at `dist/converter/generated/wasm.d.ts`.
 
-MPL-2.0 is a file level licence. It covers `web-ifc.wasm` and the files it was
+MPL-2.0 is a file-level licence. It covers `web-ifc.wasm` and the files it was
 built from, and it does not extend to this package's own source, which stays
 under the licence in `LICENSE.md`. Section 3.2 requires that the Source Code
 Form be available to anyone who receives the Executable Form: it is, at the
