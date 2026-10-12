@@ -98,7 +98,8 @@ export const extension = defineExtension({
   `() => import(...)` loader;
 - two entries of one list share an identifier;
 - a navigation path is not `/<id>` or below it, or its path part has a `.` or
-  `..` segment, a backslash, or a percent-encoded `.`, `/` or `\`;
+  `..` segment, a backslash, a control character, or a percent-encoded `.`,
+  `/` or `\`;
 - a contributed substrate reuses a standard id (`image`, `aec`, `mesh`,
   `video`, `embed`, `geo`, `field`);
 - a preset targets a substrate that is neither standard nor contributed.

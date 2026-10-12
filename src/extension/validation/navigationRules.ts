@@ -10,8 +10,13 @@ const isUnder = (path: string, prefix: string) =>
   (path.length === prefix.length ||
     ['/', '?', '#'].includes(path.charAt(prefix.length)));
 
-/** A backslash, or a percent-encoded `.`, `/` or `\`. */
-const UNSAFE_CHARACTERS = /\\|%2e|%2f|%5c/i;
+/**
+ * A backslash, a control character, or a percent-encoded `.`, `/` or `\`.
+ * The URL parser drops tabs and line breaks, so `/bim/.\t./admin` would
+ * otherwise reach `/admin`.
+ */
+// eslint-disable-next-line no-control-regex
+const UNSAFE_CHARACTERS = /\\|[\u0000-\u001f\u007f]|%2e|%2f|%5c/i;
 
 /**
  * Browsers resolve `.` and `..` segments and treat `\` as `/`, so
@@ -28,7 +33,7 @@ const escapesPrefix = (path: string) => {
 
 const pathProblem = (path: string, prefix: string): string | undefined => {
   if (escapesPrefix(path)) {
-    return 'must not contain "." or ".." segments, backslashes or percent-encoded ".", "/" or "\\"';
+    return 'must not contain "." or ".." segments, backslashes, control characters or percent-encoded ".", "/" or "\\"';
   }
   return isUnder(path, prefix) ? undefined : `must be under "${prefix}"`;
 };

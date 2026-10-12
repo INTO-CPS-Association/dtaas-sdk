@@ -38,6 +38,8 @@ describe('navigation rule', () => {
     '/shm%2f..%2fadmin',
     '/shm/..%5cadmin',
     '/shm\\..\\admin',
+    '/shm/.\t./admin',
+    '/shm/.\n./admin',
   ])('rejects %s, which could leave the mount point', (path) => {
     expect(errorsFor('shm', path)).toEqual([
       expect.stringContaining('must not contain "." or ".." segments'),

@@ -105,7 +105,7 @@ function manifestOf(model: BimModel | null, value: unknown): ManifestRead {
   return {
     model,
     bindings: manifest.bindings,
-    proposed: manifest.model?.proposed === true,
+    proposed: manifest.model.proposed === true,
     problem: null,
   };
 }

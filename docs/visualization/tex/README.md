@@ -39,13 +39,13 @@ option), `enumitem`, `listings`, `fancyhdr`, `titlesec`, `caption`, `natbib`,
 
 Last build: **17 pages**, no undefined references or citations.
 
-The document was condensed from an earlier 37-page draft. Content was
-compressed, not dropped: all fourteen techniques, all eleven requirements, the
-full architecture, the package register, the phase plan and the source
-provenance are retained in shorter form. What was removed is per-technique
-commercial-practice narrative, the full renderer comparison table (now a prose
-paragraph), the per-file source-provenance table (now a paragraph) and the
-expanded literature positioning.
+The document was condensed from an earlier 37-page draft, and it keeps, in
+shorter form, all fourteen techniques, all eleven requirements, the full
+architecture, the package register, the phase plan and the source provenance.
+What was removed is per-technique commercial-practice narrative, the full
+renderer comparison table (now a prose paragraph), the per-file
+source-provenance table (now a paragraph) and the expanded literature
+positioning.
 
 ## Output
 
