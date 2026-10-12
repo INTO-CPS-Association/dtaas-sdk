@@ -129,7 +129,9 @@
     "typescript": "6.0.3",
     "zod": "4.4.3"
   },
+  "// resolutions": "js-yaml 4 for @istanbuljs/load-nyc-config drops js-yaml 3, whose CLI pulls argparse 1 and sprintf-js (GHSA-hp3w-g68c-fv3c, no fixed release). The config loader only calls load(), which js-yaml 4 keeps.",
   "resolutions": {
-    "esbuild": "0.28.1"
+    "esbuild": "0.28.1",
+    "**/@istanbuljs/load-nyc-config/js-yaml": "4.3.2"
   }
 }
