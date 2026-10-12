@@ -47,6 +47,15 @@ package adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Sensor cards start from the latest stored value instead of being blank
   until the next sample.
 
+### Security
+
+- The sensor manifest is validated with `readManifest` before its bindings
+  are used. A manifest that fails the schema, including one without the
+  `model` provenance block, is reported on the page and binds nothing.
+- The GLB loader fetches only `data:` and `blob:` URIs and URLs on the page's
+  origin or the model's origin. A buffer or image URL on another origin
+  fails without a request.
+
 ### Known gaps (recorded against the SDK)
 
 - `ScopeContext` carries no element properties, so `bim.room` / `bim.storey`
