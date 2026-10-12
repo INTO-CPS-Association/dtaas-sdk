@@ -24,6 +24,9 @@ const PEERS = [
   'react-router-dom@7.18.4',
 ];
 
+// Install scripts of unvetted transitive versions must not run in CI.
+const ADD = ['add', '--silent', '--ignore-scripts'];
+
 // Only the router's own copy says this, so finding it means it was bundled.
 const BUNDLED_ROUTER = 'React Router caught the following error during render';
 
@@ -146,7 +149,7 @@ const packTo = (sourceDirectory, directory, name) => {
 const installEverything = (directory, bimArchive, sdkArchive) => {
   yarn(['init', '-y'], directory);
   yarn(
-    ['add', '--silent', `file:${bimArchive}`, `file:${sdkArchive}`, ...PEERS],
+    [...ADD, `file:${bimArchive}`, `file:${sdkArchive}`, ...PEERS],
     directory,
   );
 };
