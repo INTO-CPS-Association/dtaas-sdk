@@ -15,9 +15,13 @@ describe('the bim extension', () => {
     expect(validateExtension(extension)).toEqual({ valid: true, errors: [] });
   });
 
+  // The page pulls in three.js and the IFC wasm. With a cold jest cache the
+  // first load takes longer than the harness default of 2 s, so the test
+  // failed now and then on a first run without anything being wrong.
   it('passes the conformance harness and logs readiness', async () => {
     const host = fakeHostServices({ extensionId: 'bim' });
-    await expect(checkConformance(extension, { host })).resolves.toEqual({
+    const options = { host, timeoutMs: 10_000 };
+    await expect(checkConformance(extension, options)).resolves.toEqual({
       passed: true,
       errors: [],
     });
@@ -25,7 +29,7 @@ describe('the bim extension', () => {
       level: 'info',
       args: ['bim ready'],
     });
-  });
+  }, 15_000);
 
   it('fails conformance when the models directory is configured empty', async () => {
     const host = fakeHostServices({
