@@ -201,3 +201,12 @@ test('the URL check passes local and same-origin addresses only', () => {
   expect(allow('//evil.example/a.bin')).toBe(BLOCKED_URL);
   expect(allow('http://[bad')).toBe(BLOCKED_URL);
 });
+
+test('a model with an opaque origin does not trust other opaque URLs', () => {
+  const allow = restrictUrls('data:model/gltf-binary;base64,AAAA');
+
+  expect(allow('file:///etc/hosts')).toBe(BLOCKED_URL);
+  expect(allow('data:application/octet-stream;base64,AAAA')).toBe(
+    'data:application/octet-stream;base64,AAAA',
+  );
+});

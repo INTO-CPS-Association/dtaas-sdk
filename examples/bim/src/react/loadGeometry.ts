@@ -91,7 +91,12 @@ export const BLOCKED_URL = 'data:blocked';
  */
 export function restrictUrls(modelUrl: string): (url: string) => string {
   const base = globalThis.location.href;
-  const allowed = [globalThis.location.origin, new URL(modelUrl, base).origin];
+  // An opaque origin reads "null", and every opaque URL shares it, so it is
+  // never trusted as an origin.
+  const allowed = [
+    globalThis.location.origin,
+    new URL(modelUrl, base).origin,
+  ].filter((origin) => origin !== 'null');
   return (url) => {
     try {
       const target = new URL(url, base);
