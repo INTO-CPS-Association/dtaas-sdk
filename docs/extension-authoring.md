@@ -97,7 +97,9 @@ export const extension = defineExtension({
 - a converter, field kernel or substrate `load` is not a zero-argument
   `() => import(...)` loader;
 - two entries of one list share an identifier;
-- a navigation path is not `/<id>` or below it;
+- a navigation path is not `/<id>` or below it, or its path part has a `.` or
+  `..` segment, a backslash, a control character, or a percent-encoded `.`,
+  `/` or `\`;
 - a contributed substrate reuses a standard id (`image`, `aec`, `mesh`,
   `video`, `embed`, `geo`, `field`);
 - a preset targets a substrate that is neither standard nor contributed.
@@ -155,14 +157,14 @@ export default [
 ];
 ```
 
-They forbid importing — statically or with `import()` —
+They forbid importing, statically or with `import()`,
 `@into-cps-association/dtaas-web`, `@into-cps-association/dtaas-visualisation`
 outside `contribute/*`, and socket and broker clients (`mqtt`,
 `@stomp/stompjs`, `@influxdata/influxdb-client`, `socket.io-client`, `ws`).
 They also forbid the `WebSocket` and `EventSource` globals and reading `env`,
 `WebSocket` or `EventSource` through `globalThis`, `window` or `self`.
 
-ESLint replaces, rather than merges, the options of a rule configured twice.
+ESLint replaces the options of a rule configured twice and does not merge them.
 If your own configuration also sets `no-restricted-imports`,
 `no-restricted-globals`, `no-restricted-properties` or `no-restricted-syntax`
 (airbnb-base sets the last one), put `...dtaasKitConfig` last, or copy its

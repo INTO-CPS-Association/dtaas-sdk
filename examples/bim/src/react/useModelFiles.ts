@@ -9,6 +9,7 @@
 import { useEffect, useState } from 'react';
 import type { Binding } from 'src/core';
 import type { PropertyTree } from 'src/viewer';
+import { readManifest, type ManifestProblem } from 'src/schema';
 import { fileUrl, type BimModel } from 'src/react/assets';
 import { fetchJson, messageOf, type Problem } from 'src/react/libraryJson';
 
@@ -21,8 +22,8 @@ export interface ModelFiles {
 }
 
 interface Manifest {
-  bindings?: Binding[];
-  model?: { proposed?: boolean };
+  bindings: Binding[];
+  model: { proposed?: boolean };
 }
 
 type Sidecar = Omit<ModelFiles, 'tree'>;
@@ -80,11 +81,31 @@ function useTree(libraryUrl: string, chosen: BimModel | null) {
 
 type ManifestRead = { model: BimModel | null } & Sidecar;
 
-function manifestOf(model: BimModel | null, manifest: Manifest): ManifestRead {
+function invalidManifest(
+  model: BimModel | null,
+  problems: ManifestProblem[],
+): ManifestRead {
+  const summary = 'The sensor manifest is not valid.';
+  const detail = problems
+    .map(({ where, message }) => `${where}: ${message}`)
+    .join(', ');
+  return { model, ...NO_MANIFEST, problem: { summary, detail } };
+}
+
+/**
+ * Check the file against the schema before any binding is used, so a bad
+ * manifest is reported here and not as an error deep in the resolver. The
+ * file's own object is kept, since the schema drops the optional fields a
+ * binding may carry (`id`, `mountedOn`, `role`).
+ */
+function manifestOf(model: BimModel | null, value: unknown): ManifestRead {
+  const result = readManifest(value);
+  if (!result.ok) return invalidManifest(model, result.problems);
+  const manifest = value as Manifest;
   return {
     model,
-    bindings: manifest.bindings ?? NO_BINDINGS,
-    proposed: manifest.model?.proposed === true,
+    bindings: manifest.bindings,
+    proposed: manifest.model.proposed === true,
     problem: null,
   };
 }
@@ -107,10 +128,10 @@ function useManifest(libraryUrl: string, chosen: BimModel | null): Sidecar {
 
   useEffect(
     () =>
-      readBeside<Manifest>(
+      readBeside<unknown>(
         libraryUrl,
         chosen?.manifestPath,
-        (manifest) => setRead(manifestOf(chosen, manifest)),
+        (value) => setRead(manifestOf(chosen, value)),
         (error) => setRead(unreadManifest(chosen, error)),
       ),
     [chosen, libraryUrl],

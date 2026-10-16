@@ -12,7 +12,7 @@ package adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   conversion (`./converter`), the three.js scene (`./viewer`), the React
   building browser and canvas (`./react`, `./react/canvas`), and the
   framework-free domain core (`.`, `./schema`).
-- `./dtaas`: the `bim` `DtaasExtension` — the `Buildings` page and
+- `./dtaas`: the `bim` `DtaasExtension`, with the `Buildings` page and
   navigation entry, the `ifc-guid` anchor kind, the `bim.ifc-to-glb`
   converter, the `bim.thermal-comfort` and `bim.co2` presets, and the
   `bim.room` / `bim.storey` scopes.
@@ -46,6 +46,15 @@ package adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - An invalid `?dir=` offers the folder picker at the fallback folder.
 - Sensor cards start from the latest stored value instead of being blank
   until the next sample.
+
+### Security
+
+- The sensor manifest is validated with `readManifest` before its bindings
+  are used. A manifest that fails the schema, including one without the
+  `model` provenance block, is reported on the page and binds nothing.
+- The GLB loader fetches only `data:` and `blob:` URIs and URLs on the page's
+  origin or the model's origin. A buffer or image URL on another origin
+  fails without a request.
 
 ### Known gaps (recorded against the SDK)
 

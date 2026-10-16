@@ -51,7 +51,7 @@ export const MANIFEST = {
   },
   bindings: [
     {
-      selector: { globalId: 'w1' },
+      selector: { globalId: '2O2Fr$t4X7Zf8NOew3FLOH' },
       label: 'Wall temperature',
       source: { live: { transport: 'mqtt', topic: 'swim/b/w1' } },
       display: { unit: '°C', ramp: [4, 16] },

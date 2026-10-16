@@ -4,7 +4,7 @@
  * nothing past this file knows which it got.
  */
 
-import type { Group } from 'three';
+import { LoadingManager, type Group } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import exportGlb from 'src/react/exportGlb';
 
@@ -77,9 +77,42 @@ async function convertModel(load: GeometryLoad) {
   load.onLoaded(model, `${note}${dropped}`);
 }
 
+/**
+ * An invalid data URI: the browser fails it at once, without a request, so
+ * the loader reports a failed file instead of fetching the original address.
+ */
+export const BLOCKED_URL = 'data:blocked';
+
+/**
+ * A GLB may name its buffers and images by URL, and a file in a shared
+ * library is not trusted. Only `data:` and `blob:` URIs and URLs on the
+ * page's origin or the model's own origin are fetched, so a crafted file
+ * cannot make the viewer call another host.
+ */
+export function restrictUrls(modelUrl: string): (url: string) => string {
+  const base = globalThis.location.href;
+  // An opaque origin reads "null", and every opaque URL shares it, so it is
+  // never trusted as an origin.
+  const allowed = [
+    globalThis.location.origin,
+    new URL(modelUrl, base).origin,
+  ].filter((origin) => origin !== 'null');
+  return (url) => {
+    try {
+      const target = new URL(url, base);
+      const local = ['data:', 'blob:'].includes(target.protocol);
+      return local || allowed.includes(target.origin) ? url : BLOCKED_URL;
+    } catch {
+      return BLOCKED_URL;
+    }
+  };
+}
+
 function loadGlb(load: GeometryLoad): Promise<void> {
+  const manager = new LoadingManager();
+  manager.setURLModifier(restrictUrls(load.url));
   return new Promise((resolve) => {
-    new GLTFLoader().load(
+    new GLTFLoader(manager).load(
       load.url,
       (gltf) => resolve(load.onLoaded(gltf.scene)),
       undefined,

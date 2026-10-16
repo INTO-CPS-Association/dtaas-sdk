@@ -1,9 +1,14 @@
 # DTaaS Client: Modular Domain Extensions
 
 **Status:** Proposal (revision 2)
-**Scope:** `client/` of `INTO-CPS-Association/DTaaS` (branch `feature/distributed-demo`, `@into-cps-association/dtaas-web` 1.7.0)
-**Reference implementation of the pattern:** `@into-cps-association/bim-kit` 0.1.1 and `client/src/route/bim/`
-**Companion document:** *A Visualisation Layer for Web-Based Digital Twin Platforms* (`DTaaS-Visualisation-Layer.pdf`, sources in `tex/`). Requirements R1–R11, techniques T1–T14 and the six-layer architecture referenced below are defined there.
+**Scope:** `client/` of `INTO-CPS-Association/DTaaS` (branch
+`feature/distributed-demo`, `@into-cps-association/dtaas-web` 1.7.0)
+**Reference implementation of the pattern:** `@into-cps-association/bim-kit`
+0.1.1 and `client/src/route/bim/`
+**Companion document:** *A Visualisation Layer for Web-Based Digital Twin
+Platforms* (`DTaaS-Visualisation-Layer.pdf`, sources in `tex/`). Requirements
+R1–R11, techniques T1–T14 and the six-layer architecture referenced below are
+defined there.
 
 ---
 
@@ -47,20 +52,20 @@ package currently owns all of the following:
 | Live data transport | Subscribes to MQTT topics named in `.manifest.json` | **No.** Every domain reads the same RabbitMQ. |
 | Binding a signal to geometry | `.manifest.json` maps sensor → IFC object → topic | **Partly.** The *key* (IFC `GlobalId`) is domain-specific; the *mechanism* (an authored, persisted signal→location map) is not. |
 | Visual encoding | Heatmap; scopes per sensor / room / floor / building; flood-fill rasterisation | **Partly.** Flood-fill through walls is building-specific; colour scale, threshold and scoping are not. |
-| Time | Latest reading only | **No** — and the absence is the problem: no replay, no history, no simulated-vs-measured. |
+| Time | Latest reading only | **No**, and the absence is the problem: no replay, no history, no simulated-vs-measured. |
 | Rendering | three.js scene, IFC → GLB via `web-ifc` | **No.** The `aec` substrate serves hospitals and plants as well as buildings. |
 | Persistence of converted geometry | `persistGeometry.ts` → workspace Contents API | **No.** |
 
 A `wind-kit` and a `pump-kit` built the same way would each re-implement the
 transport, the binding mechanism, the encoding rules, the time handling and the
-persistence — and each would make the same "latest value only" decision, which
+persistence, and each would make the same "latest value only" decision, which
 the companion report identifies as the one decision that cannot be retrofitted
 (R4, R5). The report's central finding applies here directly:
 
 > The renderer is an implementation detail. The durable, reusable artefacts are
 > transport normalisation, the temporal state store, anchor resolution and the
 > encoding vocabulary. None exist off the shelf, which is why they are worth
-> building — **once**.
+> building, **once**.
 
 It also applies a second distinction that the current package boundary
 conflates: **domain** (buildings, wind, pumps, hospitals) is not the same axis
@@ -74,8 +79,8 @@ The goal is therefore a client that is a **host** plus a **common
 visualisation core** plus zero or more **domain extensions**, where:
 
 - the host provides platform services (auth, library, contents, GitLab, UI);
-- the common core provides the domain-independent layers — transport, temporal
-  state, anchor resolution, encoding rules, substrate adapters — once, against
+- the common core provides the domain-independent layers (transport, temporal
+  state, anchor resolution, encoding rules, substrate adapters) once, against
   the services `dtaas-services` already deploys (R10);
 - a domain extension is an npm package that contributes only what is genuinely
   unique to its domain: asset converters, anchor namespaces, encoding presets,
@@ -83,7 +88,7 @@ visualisation core** plus zero or more **domain extensions**, where:
 
 ## 2. Goals and non-goals
 
-**Goals**
+### Goals
 
 1. A domain extension is an ordinary npm package. Adding or removing one is a
    change to two files in the client: `package.json` and an extension manifest.
@@ -118,7 +123,7 @@ visualisation core** plus zero or more **domain extensions**, where:
     like a model or a function: authored in the client, committed to GitLab,
     reviewed as a merge request, reused by another user (R7).
 
-**Non-goals (for this iteration)**
+### Non-goals (for this iteration)
 
 - Runtime plugin loading (Module Federation, `import()` from a URL). The
   contract below is designed so that this can be added later without changing
@@ -136,7 +141,7 @@ Ranked. The first is recommended. The options concern how extensions are
 *discovered*; the common/domain split in §5 is orthogonal and applies to all
 of them.
 
-### Option A — Static extension manifest, compile-time registry *(recommended)*
+### Option A: Static extension manifest, compile-time registry *(recommended)*
 
 The client has one file, `src/extensions.ts`, that imports each extension's
 `dtaas` entry point and passes the array to a `createExtensionHost()` that
@@ -150,14 +155,14 @@ code-splits as usual.
   fork or patch one file and rebuild. That is acceptable because the same
   deployer already has to edit `package.json`.
 
-### Option B — Auto-discovery from `package.json` via a Vite virtual module
+### Option B: Auto-discovery from `package.json` via a Vite virtual module
 
 - **For:** one file to edit instead of two.
 - **Against:** a virtual module is invisible to Jest without a moduleNameMapper
   shim, to `madge`, and to a reviewer reading the diff; a typo in
   `package.json` fails late. Can be layered onto A later if wanted.
 
-### Option C — Runtime plugins (Vite/Webpack Module Federation)
+### Option C: Runtime plugins (Vite/Webpack Module Federation)
 
 - **For:** deployers add extensions without rebuilding `dtaas-web`.
 - **Against:** React, MUI, Redux and three.js must be shared singletons across
@@ -167,10 +172,10 @@ code-splits as usual.
   The contract in §6 is kept free of build-tool assumptions so this remains an
   upgrade path.
 
-### Option D — iframe micro-frontends per domain
+### Option D: iframe micro-frontends per domain
 
 - **Against:** no shared Redux state, no shared theme, no shared auth session
-  without a postMessage protocol, and — decisive now — no shared *playhead*.
+  without a postMessage protocol, and (decisive now) no shared *playhead*.
   Substrates that cannot sample one clock cannot deliver replay (T6), the ghost
   twin (T9) or video synchronisation (T14). The `embed` substrate uses iframes
   deliberately for Grafana, ThingsBoard and the workspace desktop, and drives
@@ -229,7 +234,7 @@ Four package roles:
 | Role | Package | Owner / repo | Ships runtime code? |
 | --- | --- | --- | --- |
 | Contract | `@into-cps-association/dtaas-sdk` | DTaaS monorepo, `client/sdk/` (published) | Types, a few tiny helpers, a test harness. No React components. |
-| Common core | `@into-cps-association/dtaas-visualisation` | DTaaS monorepo, `client/viz/` (published) | Yes: transport, store, anchors, encodings, standard substrates, viewer components. Reusable by other web-based DT platforms — that is the stated goal of the companion report. |
+| Common core | `@into-cps-association/dtaas-visualisation` | DTaaS monorepo, `client/viz/` (published) | Yes: transport, store, anchors, encodings, standard substrates, viewer components. Reusable by other web-based DT platforms, which is the stated goal of the companion report. |
 | Host | `@into-cps-association/dtaas-web` | DTaaS monorepo, `client/` | Yes |
 | Extension | `@into-cps-association/<domain>-kit` | One repo per domain (e.g. `ifc-utils` for `bim-kit`) | Yes, lazily loaded by the host |
 
@@ -251,8 +256,8 @@ companion report's six layers, with the additional observation that
 | --- | --- | --- | --- |
 | **1 Transport** | `SignalSample` shape; adapters for MQTT/WSS and AMQP/Web-STOMP against the deployed RabbitMQ, ThingsBoard WebSocket telemetry, InfluxDB `range()`, HTTP/SQL, file replay (CSV/Parquet) | Nothing. A kit names *which* topics or buckets in its presets; it never opens a socket. | Endpoint discovery from `env.js` (broker URL, Influx org, ThingsBoard host) |
 | **2 Temporal store** | Hot ring buffers per `(signalPath, channel)`; InfluxDB cold tier; one playhead; `valueAt(path, channel, t)`; measured / simulated / predicted / setpoint channels | Nothing. | Playhead and connection status in Redux (`state.viz`); buffers outside Redux |
-| **3 Anchor resolution** | `Anchor` schema; resolver registry; homography registry for image substrates; `tb-entity` resolver against ThingsBoard | **Domain anchor kinds and resolvers**: `ifc-guid` (bim), `turbine:<id>/<component>` (wind), `epanet:<node|link>` (pump). Migration from `.manifest.json`. | Nothing |
-| **4 Encoding** | Vocabulary (`colorScale`, `visibility`, `transform`, `flow`, `residual`, `ghost`, `label`, `attention`, `glyph`, `regionFill`, `fieldOverlay`, `trajectory`); evaluators; colour scales | **Presets**: named, domain-typed encoding bundles — "thermal comfort per room", "power curve deviation", "network pressure". Also **domain scoping rules** (bim: per room / floor via the IFC spatial tree; pump: per pressure zone). | Nothing |
+| **3 Anchor resolution** | `Anchor` schema; resolver registry; homography registry for image substrates; `tb-entity` resolver against ThingsBoard | **Domain anchor kinds and resolvers**: `ifc-guid` (bim), `turbine:<id>/<component>` (wind), `epanet:<node\|link>` (pump). Migration from `.manifest.json`. | Nothing |
+| **4 Encoding** | Vocabulary (`colorScale`, `visibility`, `transform`, `flow`, `residual`, `ghost`, `label`, `attention`, `glyph`, `regionFill`, `fieldOverlay`, `trajectory`); evaluators; colour scales | **Presets**: named, domain-typed encoding bundles such as "thermal comfort per room", "power curve deviation", "network pressure". Also **domain scoping rules** (bim: per room / floor via the IFC spatial tree; pump: per pressure zone). | Nothing |
 | **5 Substrates** | `image`, `aec`, `mesh`, `video`, `embed`; later `geo`, `field`. Each behind `SubstrateAdapter`. | **Only substrates no standard adapter covers**, e.g. a P&ID SVG schematic for pumps, a wake-plan canvas for wind. Registered through the same interface. | Nothing |
 | **Asset pipeline** | Generic loaders (glTF, IFC via `@thatopen`, image, HLS) | **Converters** for domain formats: IFC → fragments (moves from `bim-kit`'s `web-ifc` path into a converter the `aec` substrate calls), FAST `.fst`/`.out` → time series + glTF, EPANET `.inp` → graph + geometry. | Where converted output is stored (`common/models`, via `contents`) |
 | **Viewer UI** | `TwinViewer`, `Timeline`, `Inspector`, `BindingEditor`, `Calibrator`, `Legend`; the generic **Visualise** DT tab | **Domain pages** (`/bim`, `/wind`, `/pump`), navigation, asset previews, domain-specific inspector panels | Layout, PageShell, theme |
@@ -269,8 +274,8 @@ implementation.
 | Substrate | Backing library (common) | Domains that use it |
 | --- | --- | --- |
 | `image` | `react-konva`, `opencv-ts` (homography), `leaflet` for very large images | **All.** Photographs, plans and scanned drawings exist before models do; this is the first substrate to build and the fallback for every twin (R9). |
-| `aec` | `@thatopen/components` + `@thatopen/fragments` | Buildings, hospitals, plants — any IFC. `bim-kit`'s renderer migrates here. |
-| `mesh` | `react-three-fiber` + `drei` (+ `urdf-loader`) | Machines, wind turbines, pumps, robots — any glTF assembly. |
+| `aec` | `@thatopen/components` + `@thatopen/fragments` | Buildings, hospitals, plants: any IFC. `bim-kit`'s renderer migrates here. |
+| `mesh` | `react-three-fiber` + `drei` (+ `urdf-loader`) | Machines, wind turbines, pumps, robots: any glTF assembly. |
 | `video` | `HTMLVideoElement` + `hls.js` / WebRTC | Any domain with a camera; skew must be declared (R11). |
 | `embed` | `react-iframe` (already a client dependency) | Any: Grafana, ThingsBoard, the workspace VNC desktop. |
 | `geo` | `CesiumJS` / `3DTilesRendererJS` | City, mobility, marine. Later. |
@@ -294,7 +299,7 @@ those substrates meaningful for a turbine.
 | The Buildings page | `bim-kit/src/dtaas/pages` | Domain |
 
 After migration `bim-kit` is smaller, and `wind-kit` starts from the same
-size rather than from zero.
+size instead of from zero.
 
 ## 6. The extension contract (`dtaas-sdk`)
 
@@ -353,7 +358,7 @@ export interface DomainContribution {
 ```
 
 Every `element`, converter and substrate is lazy. The registry checks this
-with a type guard and a unit test, which is how goal 4 is enforced rather than
+with a type guard and a unit test, which is how goal 4 is enforced and not
 hoped for.
 
 ### 6.2 What the host provides (`HostServices`)
@@ -454,7 +459,7 @@ value only" from being reinvented in a kit.
 Taken from the companion report, §6, with the registries that kits contribute
 into made explicit:
 
-```
+```text
 client/viz/
   src/
     transport/       # L1: mqtt, stomp, thingsboard, influx, http, file
@@ -485,7 +490,7 @@ load lazily; an image-only twin never downloads `@thatopen` or three.js.
 `./converter` know nothing about React, `./react` knows nothing about DTaaS.
 The viewer moves out (§5.3); the converter stays; one layer is added.
 
-```
+```text
 <domain>-kit/
   src/
     core/         framework-free domain logic: converters, anchor resolvers, scope rules, field kernels
@@ -517,9 +522,9 @@ keep working outside DTaaS.
 | --- | --- | --- | --- |
 | **Common, consumed as-is** | transport · store · playhead · encoding vocabulary · `aec` `image` `embed` substrates · viewer UI · `visualisation.json` persistence | same | same |
 | Asset format(s) → converter | IFC → fragments; `.manifest.json` → `visualisation.json` migration | SCADA CSV → time series; FAST `.fst`+`.out` → time series; turbine GLB (none) | EPANET `.inp` → graph + geometry; P&ID SVG; pump curve JSON |
-| Anchor kind(s) | `ifc-guid` on `aec` | `turbine:<id>/<component>` on `mesh` (`blade1`, `nacelle`, `gearbox`) | `epanet:<node|link>` on `mesh` and on the kit's `pid` substrate |
+| Anchor kind(s) | `ifc-guid` on `aec` | `turbine:<id>/<component>` on `mesh` (`blade1`, `nacelle`, `gearbox`) | `epanet:<node\|link>` on `mesh` and on the kit's `pid` substrate |
 | Substrates used | `aec`, `image` (floor photo / plan), `embed` (Grafana) | `mesh`, `image` (site photo), `video` (nacelle camera), `embed` (SCADA board) | `mesh`, **`pid` (kit-contributed)**, `image` (plant photo), `embed` |
-| Presets | thermal comfort per room; CO₂ per floor; occupancy | power-curve deviation (measured vs simulated — T9); wake plan; vibration | network pressure map; residual vs EPANET (T9); flow direction (T5) |
+| Presets | thermal comfort per room; CO₂ per floor; occupancy | power-curve deviation (measured vs simulated, T9); wake plan; vibration | network pressure map; residual vs EPANET (T9); flow direction (T5) |
 | Domain scoping / kernels | per room / floor via IFC spatial tree; wall-aware flood fill | per turbine / per string | per pressure zone |
 | Route / navigation | `/bim` Buildings | `/wind` Wind Farms | `/pump` Water Networks |
 | Extra DT tab | none (generic Visualise suffices) | none | Schematic (the `pid` substrate full-screen) |
@@ -537,7 +542,7 @@ and it plugs in through the same interface the standard substrates use.
 
 ### 8.1 New files
 
-```
+```text
 client/
   sdk/                              # published as @into-cps-association/dtaas-sdk
     src/index.ts                    # types from §6
@@ -581,7 +586,7 @@ export const extensions: readonly DtaasExtension[] = [bim, wind];
 | `src/routes.tsx` | Core routes stay literal. Append `...host.routes`. The hand-written `bim` entry goes. |
 | `src/page/MenuItems.tsx` | `menuItems = [...coreItems, ...host.navigation]` sorted by `order`. |
 | `src/components/appIcons.tsx` | `BuildingModelsIcon` removed; the extension owns its icon. |
-| `src/store/storeTypes.ts` | Add `viz: vizSlice` (playhead, connections, subscriptions, selection, layout — **not** samples) and `ext: combineSlices(...)`. |
+| `src/store/storeTypes.ts` | Add `viz: vizSlice` (playhead, connections, subscriptions, selection, layout, **not** samples) and `ext: combineSlices(...)`. |
 | `src/store/store.ts` | After store creation, instantiate the viz core with endpoints from `env.js`, then `await Promise.all(extensions.map(e => e.setup?.(hostServices)))`. |
 | `src/route/digitaltwins/DigitalTwins.tsx` | Add the generic **Visualise** tab, shown when the DT has a `visualisation.json` *or* any extension's `detect(dt)` is true. Extension `digitalTwinTabs` are appended after it. |
 | `src/route/library/*` | Register `visualisation` as an asset type in the listing and the composition cart; file click consults `host.assetPreviews`. |
@@ -605,7 +610,8 @@ export const extensions: readonly DtaasExtension[] = [bim, wind];
 5. **Merges `visualisation` contributions** into the core registries: rejects
    duplicate anchor kinds and preset ids across kits; rejects a kit that
    registers a substrate whose `id` is one of the standard set (goal 9).
-6. Returns `{ routes, navigation, digitalTwinTabs, assetPreviews, reducers, about, viz: { anchorKinds, presets, substrates, converters, detectors } }`.
+6. Returns `{ routes, navigation, digitalTwinTabs, assetPreviews, reducers,
+   about, viz: { anchorKinds, presets, substrates, converters, detectors } }`.
 
 Pure function, fully unit-testable without React.
 
@@ -642,7 +648,8 @@ and the `intocps/dtaas-web` Docker image.
 
 1. **Copyleft anywhere contaminates the whole client bundle.** Add a CI gate in
    the host, the core and the SDK's shared config:
-   `license-checker --onlyAllow 'MIT;ISC;BSD-2-Clause;BSD-3-Clause;Apache-2.0;MPL-2.0;0BSD;CC0-1.0;Unlicense;The INTO-CPS Association License'`.
+   `license-checker --onlyAllow 'MIT;ISC;BSD-2-Clause;BSD-3-Clause;Apache-2.0;MPL-2.0;0BSD;CC0-1.0;Unlicense;The
+   INTO-CPS Association License'`.
    MPL-2.0 is allowed because it is file-level (`web-ifc`). LGPL in a browser
    bundle is contentious; exclude by default. The companion report's licence
    register (Appendix B) already applies this to the core's candidates:
@@ -666,8 +673,8 @@ and the `intocps/dtaas-web` Docker image.
 
 Each is one pull request, reviewable and mergeable on its own; the app works
 after every step. The sequence interleaves the extension mechanism with the
-companion report's phases so that the first user-visible result — live values
-on a photograph — arrives before any renderer is migrated.
+companion report's phases so that the first user-visible result, live values
+on a photograph, arrives before any renderer is migrated.
 
 | # | Increment | Repo | Report phase | Reviewable proof |
 | --- | --- | --- | --- | --- |
@@ -709,7 +716,7 @@ kit that ships no renderer, which is the sign goal 9 is met.
    (simplest, no history) or GitLab (versioned, reviewable, needs the
    deployment's GitLab to hold the DT). `REACT_APP_VIZ_PERSIST` selects; the
    core supports both. Recommend GitLab where available.
-4. **Live data transport** — *resolved* by increment 3: the core's adapters
+4. **Live data transport.** *Resolved* by increment 3: the core's adapters
    against the deployed RabbitMQ (MQTT and AMQP) and ThingsBoard, with InfluxDB
    for history. What remains open is only the ThingsBoard-versus-direct-MQTT
    choice per deployment, which is configuration.

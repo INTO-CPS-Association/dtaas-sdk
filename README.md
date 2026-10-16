@@ -6,8 +6,8 @@
 extensions** (`bim-kit`, `wind-kit`, `pump-kit`, …).
 
 A domain extension is an ordinary npm package. It declares what it
-contributes — pages, navigation, digital twin tabs, asset previews, anchor
-kinds, converters, encoding presets, substrates — as one `DtaasExtension`
+contributes (pages, navigation, digital twin tabs, asset previews, anchor
+kinds, converters, encoding presets, substrates) as one `DtaasExtension`
 object, and receives everything it needs from the host through an injected
 `HostServices` object. It never imports DTaaS internals and never opens its
 own sockets.

@@ -24,6 +24,9 @@ const PEERS = [
   'react-router-dom@7.18.4',
 ];
 
+// Install scripts of unvetted transitive versions must not run in CI.
+const ADD = ['add', '--silent', '--ignore-scripts'];
+
 // Only the router's own copy says this, so finding it means it was bundled.
 const BUNDLED_ROUTER = 'React Router caught the following error during render';
 
@@ -116,7 +119,7 @@ const checkDist = (bimRoot) => {
 };
 
 // Each subpath's most telling export, plus the dtaas extension validated
-// through the real SDK rather than a hand-rolled shape check.
+// through the real SDK instead of a hand-rolled shape check.
 const importScript = (bimName, sdkName) => `
 import assert from 'node:assert/strict';
 const core = await import('${bimName}');
@@ -146,7 +149,7 @@ const packTo = (sourceDirectory, directory, name) => {
 const installEverything = (directory, bimArchive, sdkArchive) => {
   yarn(['init', '-y'], directory);
   yarn(
-    ['add', '--silent', `file:${bimArchive}`, `file:${sdkArchive}`, ...PEERS],
+    [...ADD, `file:${bimArchive}`, `file:${sdkArchive}`, ...PEERS],
     directory,
   );
 };

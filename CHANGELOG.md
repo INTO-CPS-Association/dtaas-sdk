@@ -28,3 +28,11 @@ package adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   connection; fake `signals.setConnection(state, paths?)` for tests.
 - `./eslint`: flat-config rules enforcing the extension boundary (§6.3).
 - `examples/hello-kit`: the template layout of a domain kit.
+
+### Security
+
+- `validateExtension` rejects a navigation path whose path part has a `.` or
+  `..` segment, a backslash, a control character, or a percent-encoded `.`,
+  `/` or `\`, so a path cannot leave the extension's mount point once a
+  browser resolves it. A path that needs an encoded slash inside a segment
+  is rejected as well.

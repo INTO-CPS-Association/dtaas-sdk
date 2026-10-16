@@ -17,6 +17,9 @@ const PEERS = [
   '@types/react-dom@19.2.3',
 ];
 
+// Install scripts of unvetted transitive versions must not run in CI.
+const ADD = ['add', '--silent', '--ignore-scripts'];
+
 const ALLOWED =
   /^package\/(package\.json|README\.md|LICENSE\.md|CHANGELOG\.md|dist\/.+\.(js|d\.ts))$/;
 const REQUIRED = [
@@ -121,7 +124,7 @@ const runSmokeTest = () => {
     yarn(['pack', '--filename', archive], process.cwd());
     checkTarball(archive);
     yarn(['init', '-y'], directory);
-    yarn(['add', '--silent', `file:${archive}`, ...PEERS], directory);
+    yarn([...ADD, `file:${archive}`, ...PEERS], directory);
     execFileSync(
       process.execPath,
       ['--input-type=module', '--eval', importScript(packageName())],

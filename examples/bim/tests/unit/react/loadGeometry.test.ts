@@ -11,7 +11,13 @@ import { Group } from 'three';
 import { convertIfc } from 'src/converter';
 import { meshesFrom } from 'src/react/ifcMeshes';
 import exportGlb from 'src/react/exportGlb';
-import { loadGeometry, type GeometryLoad } from 'src/react/loadGeometry';
+import type { LoadingManager } from 'three';
+import {
+  BLOCKED_URL,
+  loadGeometry,
+  restrictUrls,
+  type GeometryLoad,
+} from 'src/react/loadGeometry';
 
 jest.mock('src/converter', () => ({ convertIfc: jest.fn() }));
 jest.mock('src/react/ifcMeshes', () => ({ meshesFrom: jest.fn() }));
@@ -20,9 +26,17 @@ jest.mock('src/react/exportGlb', () => ({
   default: jest.fn(),
 }));
 
-const mockGltf = { scene: new Group(), fail: false };
+const mockGltf = {
+  scene: new Group(),
+  fail: false,
+  manager: undefined as LoadingManager | undefined,
+};
 jest.mock('three/examples/jsm/loaders/GLTFLoader.js', () => ({
   GLTFLoader: class {
+    constructor(manager?: LoadingManager) {
+      mockGltf.manager = manager;
+    }
+
     load(
       _url: string,
       onLoad: (loaded: { scene: Group }) => void,
@@ -155,4 +169,44 @@ test('a GLB that cannot be read says so', async () => {
   expect(calls.failed).toEqual([
     'The geometry could not be read. It may be incomplete.',
   ]);
+});
+
+test('a GLB may only fetch data, blob and same-origin addresses', async () => {
+  const { done } = load({ convert: false });
+  await done;
+  const resolve = (url: string) => mockGltf.manager?.resolveURL(url);
+
+  expect(resolve('https://evil.example/steal.bin')).toBe(BLOCKED_URL);
+  expect(resolve('http://host/jane/files/common/models/a.bin')).toBe(
+    'http://host/jane/files/common/models/a.bin',
+  );
+});
+
+test('the URL check passes local and same-origin addresses only', () => {
+  const allow = restrictUrls('http://library.test/jane/files/a.glb');
+  const page = `${globalThis.location.origin}/textures/wall.png`;
+
+  expect(allow('data:application/octet-stream;base64,AAAA')).toBe(
+    'data:application/octet-stream;base64,AAAA',
+  );
+  expect(allow('blob:http://elsewhere.test/1234')).toBe(
+    'blob:http://elsewhere.test/1234',
+  );
+  expect(allow('a.bin')).toBe('a.bin');
+  expect(allow(page)).toBe(page);
+  expect(allow('http://library.test/jane/files/a.bin')).toBe(
+    'http://library.test/jane/files/a.bin',
+  );
+  expect(allow('https://library.test/jane/files/a.bin')).toBe(BLOCKED_URL);
+  expect(allow('//evil.example/a.bin')).toBe(BLOCKED_URL);
+  expect(allow('http://[bad')).toBe(BLOCKED_URL);
+});
+
+test('a model with an opaque origin does not trust other opaque URLs', () => {
+  const allow = restrictUrls('data:model/gltf-binary;base64,AAAA');
+
+  expect(allow('file:///etc/hosts')).toBe(BLOCKED_URL);
+  expect(allow('data:application/octet-stream;base64,AAAA')).toBe(
+    'data:application/octet-stream;base64,AAAA',
+  );
 });

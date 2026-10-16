@@ -1,7 +1,5 @@
 # bim Example Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-
 **Goal:** Port `bim-kit` 0.1.1 into the standalone package `examples/bim` and wire it to DTaaS as the extension `bim`, after adding connection status and a navigation-prefix rule to the SDK.
 
 **Architecture:** Two SDK commits land first and pass the full SDK checks. `examples/bim` is its own Yarn package; `yarn sdk` builds, packs and unpacks the SDK tarball into its `node_modules`, so bim tests the published SDK surface with one copy of React. bim-kit's framework-free core, schema, converter, three.js viewer and MUI components are ported file by file, split to meet the size rules; a `dtaas/` layer adapts `useHost()` to the page and contributes anchors, presets, scopes and a converter.
@@ -23,7 +21,7 @@
 - Folder fallback order: `?dir=` → `REACT_APP_EXT_BIM_MODELS_DIRECTORY` → `host.library.conventions.modelsDirectory`. Never the literal `common/models` in bim source.
 - `ConnectionState = 'connecting' | 'live' | 'down'`; severity `down` > `connecting` > `live`; empty path list → `live`.
 - Coverage gate for both packages: lines/statements/functions 90 %, branches 85 %.
-- Commit messages end with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. Work on branch `feat/bim-example`.
+- Work on branch `feat/bim-example`.
 
 ## Review Focus
 

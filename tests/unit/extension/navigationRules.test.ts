@@ -29,6 +29,29 @@ describe('navigation rule', () => {
     ]);
   });
 
+  it.each([
+    '/shm/../admin',
+    '/shm/..',
+    '/shm/./alarms',
+    '/shm/%2e%2e/admin',
+    '/shm/%2E%2E/admin',
+    '/shm%2f..%2fadmin',
+    '/shm/..%5cadmin',
+    '/shm\\..\\admin',
+    '/shm/.\t./admin',
+    '/shm/.\n./admin',
+  ])('rejects %s, which could leave the mount point', (path) => {
+    expect(errorsFor('shm', path)).toEqual([
+      expect.stringContaining('must not contain "." or ".." segments'),
+    ]);
+  });
+
+  it('accepts dots inside a segment and encoded text in the query', () => {
+    expect(
+      errorsFor('shm', '/shm/v1.2/a..b', '/shm?dir=a%2Fb/../c', '/shm#..'),
+    ).toEqual([]);
+  });
+
   it('leaves a missing path and a bad id to the other rules', () => {
     const ext = looseExtension() as unknown as Record<string, unknown>;
     ext.navigation = [{ label: 'x' }];
