@@ -56,6 +56,14 @@ jobs:
       - name: Build, pack, install and smoke-test the package
         run: yarn test:e2e
 
+      # publint checks package.json and the exports map against the packed
+      # files (packed with npm, since it cannot read the archive Yarn 1 makes);
+      # attw checks that the types resolve under every module resolution a
+      # consumer may use. The package is ESM only on purpose, so the CommonJS
+      # resolutions are skipped.
+      - name: Check the published package shape and its types
+        run: yarn check:package
+
       - name: Upload unit and integration test coverage to Codecov
         # v7.0.0
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f
