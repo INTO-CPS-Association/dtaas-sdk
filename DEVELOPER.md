@@ -24,6 +24,7 @@ This package follows the coding standards of the DTaaS client and of
 | `yarn test:coverage`                | Unit and integration tests with the coverage gate                  |
 | `yarn test:e2e`                     | Build, pack, install into a clean project and import every subpath |
 | `yarn test:all`                     | `test:coverage` then `test:e2e`                                    |
+| `yarn check:package`                | Check `package.json`, the exports map and the packed types         |
 | `yarn build`                        | Build `dist/` (tsup ESM + `tsc` declarations + `tsc-alias`)        |
 | `yarn prep`                         | Everything above plus `qlty`, before opening a pull request        |
 | `yarn clean`                        | Remove `dist/` and `coverage/`                                     |

@@ -57,7 +57,7 @@ jobs:
         run: yarn test:e2e
 
       # publint checks package.json and the exports map against the packed
-      # files (packed with npm, since it cannot read the archive Yarn 1 makes);
+      # files (packed with npm, since it cannot read the archive Yarn 1 makes).
       # attw checks that the types resolve under every module resolution a
       # consumer may use. The package is ESM only on purpose, so the CommonJS
       # resolutions are skipped.
