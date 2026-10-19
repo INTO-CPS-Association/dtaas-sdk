@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { nonEmpty } from 'src/schema/common.schema';
+import { listOf, nonEmpty, text } from 'src/schema/common.schema';
 import { anchorSchema } from 'src/schema/anchor.schema';
 import { encodingSchema } from 'src/schema/encoding.schema';
 import { encodingPresetSchema } from 'src/schema/preset.schema';
@@ -8,7 +8,7 @@ import { transportSchema } from 'src/schema/transport.schema';
 
 const layoutSchema = z.object({
   type: z.enum(['single', 'split', 'grid', 'tabs']),
-  panes: z.array(nonEmpty).min(1),
+  panes: listOf(nonEmpty).min(1),
 });
 
 /** Binds a signal to a substrate with an inline encoding or a named preset. */
@@ -24,16 +24,16 @@ const encodingBindingSchema = z
   });
 
 const assetShape = z.object({
-  schemaVersion: z.string().regex(/^1\.\d+$/, 'Only schema version 1.x'),
+  schemaVersion: text.regex(/^1\.\d+$/, 'Only schema version 1.x'),
   name: nonEmpty,
-  description: z.string().optional(),
+  description: text.optional(),
   domain: nonEmpty.optional(),
   layout: layoutSchema,
   substrates: z.record(nonEmpty, substrateDescriptorSchema),
-  transports: z.array(transportSchema).default([]),
-  anchors: z.array(anchorSchema).default([]),
-  encodings: z.array(encodingBindingSchema).default([]),
-  presets: z.array(encodingPresetSchema).optional(),
+  transports: listOf(transportSchema).default([]),
+  anchors: listOf(anchorSchema).default([]),
+  encodings: listOf(encodingBindingSchema).default([]),
+  presets: listOf(encodingPresetSchema).optional(),
 });
 
 type AssetShape = z.infer<typeof assetShape>;

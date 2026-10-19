@@ -1,3 +1,5 @@
+// These tests feed script URLs to the schema to check that it refuses them.
+/* eslint-disable no-script-url */
 import {
   parseVisualisationAsset,
   visualisationAssetSchema,
@@ -86,5 +88,31 @@ describe('visualisationAssetSchema', () => {
       ['layout', 'panes', 3],
       ['encodings', 0, 'substrate'],
     ]);
+  });
+
+  it('refuses a javascript: URL on an http transport', () => {
+    const asset = clone();
+    asset.transports = [{ adapter: 'http', url: 'javascript:alert(1)' }];
+    expect(issuePaths(asset)).toEqual([['transports', 0, 'url']]);
+  });
+
+  it('refuses a data: URL as a substrate source', () => {
+    const asset = clone();
+    asset.substrates.photo.source = 'data:text/html,<script>x</script>';
+    expect(issuePaths(asset)).toEqual([['substrates', 'photo', 'source']]);
+  });
+
+  it('accepts a name of 2048 characters and refuses one more', () => {
+    expect(issuePaths({ ...clone(), name: 'a'.repeat(2048) })).toEqual([]);
+    expect(issuePaths({ ...clone(), name: 'a'.repeat(2049) })).toEqual([
+      ['name'],
+    ]);
+  });
+
+  it('refuses more than 1000 anchors', () => {
+    const asset = clone();
+    const [first] = asset.anchors;
+    asset.anchors = Array.from({ length: 1001 }, () => first);
+    expect(issuePaths(asset)).toEqual([['anchors']]);
   });
 });
