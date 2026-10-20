@@ -39,15 +39,15 @@ The schema rejects:
 
 ## Substrate descriptor
 
-| Field           | Type                                  |
-| --------------- | ------------------------------------- |
-| `adapter`       | substrate id, e.g. `image`            |
-| `source`        | URL (`lib://`, `git://`, `https://`)? |
-| `calibration`   | homography?                           |
-| `latencyHintMs` | number?                               |
-| `timeParams`    | `[string, string]`?                   |
-| `independent`   | boolean?                              |
-| `options`       | adapter-specific record?              |
+| Field           | Type                                                              |
+| --------------- | ----------------------------------------------------------------- |
+| `adapter`       | substrate id, e.g. `image`                                        |
+| `source`        | URL (`lib://`, `git://`, `http://`, `https://`, `blob:`) or path? |
+| `calibration`   | homography?                                                       |
+| `latencyHintMs` | number?                                                           |
+| `timeParams`    | `[string, string]`?                                               |
+| `independent`   | boolean?                                                          |
+| `options`       | adapter-specific record?                                          |
 
 - `calibration` is a homography: `{ type: 'homography', id, imagePoints,
 worldPoints, units?, reprojectionError? }` with at least four point pairs
@@ -56,21 +56,26 @@ worldPoints, units?, reprojectionError? }` with at least four point pairs
 - `timeParams` names the URL parameters an `embed` substrate receives from the
   playhead, e.g. `["from", "to"]` for Grafana.
 - `independent: true` marks a pane that cannot follow the playhead.
+- `source` is refused when its scheme is not in the list above, so `javascript:`, `data:`, `vbscript:` and `file:` are refused. Schemes are compared the way a browser parses them, so `JavaScript:` or `java\tscript:` are refused too. A path without a scheme is resolved by the host against the twin, and a path that names another host, such as `//evil.example/a.jpg`, is refused.
 
 ## Transports
 
 Discriminated on `adapter`:
 
-| `adapter`     | Required fields         | Optional                                       |
-| ------------- | ----------------------- | ---------------------------------------------- |
-| `mqtt`        | `url`, `topics[]`       | `channel`, `qos`                               |
-| `stomp`       | `url`, `destinations[]` | `channel`                                      |
-| `thingsboard` | `url`, `entityIds[]`    | `keys[]`, `channel`                            |
-| `influx`      | `org`, `bucket`         | `url`, `measurement`, `role: "history"`        |
-| `http`        | `url`                   | `method`, `intervalMs`, `channel`              |
-| `file`        | `url`                   | `format` (`csv`, `parquet`, `json`), `channel` |
+| `adapter`     | Required fields         | Optional                                       | `url` schemes                              |
+| ------------- | ----------------------- | ---------------------------------------------- | ------------------------------------------ |
+| `mqtt`        | `url`, `topics[]`       | `channel`, `qos`                               | `ws`, `wss`, `mqtt`, `mqtts`               |
+| `stomp`       | `url`, `destinations[]` | `channel`                                      | `ws`, `wss`, `mqtt`, `mqtts`               |
+| `thingsboard` | `url`, `entityIds[]`    | `keys[]`, `channel`                            | `http`, `https`, `ws`, `wss`               |
+| `influx`      | `org`, `bucket`         | `url`, `measurement`, `role: "history"`        | `http`, `https`                            |
+| `http`        | `url`                   | `method`, `intervalMs`, `channel`              | `http`, `https`                            |
+| `file`        | `url`                   | `format` (`csv`, `parquet`, `json`), `channel` | `http`, `https`, `lib`, or a relative path |
 
 `channel` is one of `measured`, `simulated`, `predicted`, `setpoint`.
+
+A `url` with any other scheme is refused, including `javascript:`, `data:`, `vbscript:` and `file:`. Only the `file` transport takes a path without a scheme, which the host resolves in the library, and a path that names another host is refused.
+
+The `url` of an `mqtt` transport stays required. The host may still serve the signals through a gateway of its own instead of opening the broker URL in the browser, so the `url` names the broker the twin publishes to, and the host decides how the browser reaches it.
 
 ## Anchors
 
@@ -107,6 +112,10 @@ The encoding vocabulary, discriminated on `type`:
 `{ id, label, description?, substrate, encodings: [{ target, encoding }] }`.
 `id` is lowercase and dot-namespaced, e.g. `bim.thermal-comfort`; `target` is
 a signal-path pattern such as `building/*/temperature`.
+
+## Limits
+
+Every string in the asset, including each URL, is at most 2048 characters, and every list (`layout.panes`, `transports`, `anchors`, `encodings`, `presets`, topics, destinations, entity ids, keys, homography points and the encodings of a preset) holds at most 1000 items. An asset over a limit is refused, so an oversized file in a library cannot stall the host that parses and renders it. The `substrates` record and a substrate's `options` have no item limit.
 
 ## Example
 

@@ -3,11 +3,12 @@ import {
   channelSchema,
   domainSchema,
   nonEmpty,
+  text,
 } from 'src/schema/common.schema';
 
 const comparisonSchema = z.object({
   op: z.enum(['<', '<=', '>', '>=', '==', '!=']),
-  value: z.union([z.number(), z.string(), z.boolean()]),
+  value: z.union([z.number(), text, z.boolean()]),
 });
 
 const scheme = nonEmpty.optional();
@@ -55,7 +56,7 @@ const ghost = z.object({
 const label = z.object({
   type: z.literal('label'),
   format: nonEmpty.optional(),
-  unit: z.string().optional(),
+  unit: text.optional(),
   precision: z.number().int().min(0).optional(),
 });
 

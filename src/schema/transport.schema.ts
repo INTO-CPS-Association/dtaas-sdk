@@ -1,12 +1,24 @@
 import { z } from 'zod';
-import { channelSchema, nonEmpty } from 'src/schema/common.schema';
+import { channelSchema, listOf, nonEmpty } from 'src/schema/common.schema';
+import { urlSchema } from 'src/schema/url.schema';
 
 const channel = channelSchema.optional();
-const names = z.array(nonEmpty).min(1);
+const names = listOf(nonEmpty).min(1);
+
+/** Brokers speak MQTT or STOMP over a WebSocket, or MQTT over TCP. */
+const brokerUrl = urlSchema({ schemes: ['ws', 'wss', 'mqtt', 'mqtts'] });
+const httpUrl = urlSchema({ schemes: ['http', 'https'] });
+/** ThingsBoard serves REST over HTTP and telemetry over a WebSocket. */
+const thingsboardUrl = urlSchema({ schemes: ['http', 'https', 'ws', 'wss'] });
+/** A file is fetched over HTTP, or from the library through `lib://` or a path. */
+const fileUrl = urlSchema({
+  schemes: ['http', 'https', 'lib'],
+  relative: true,
+});
 
 const mqtt = z.object({
   adapter: z.literal('mqtt'),
-  url: nonEmpty,
+  url: brokerUrl,
   topics: names,
   channel,
   qos: z.union([z.literal(0), z.literal(1), z.literal(2)]).optional(),
@@ -14,14 +26,14 @@ const mqtt = z.object({
 
 const stomp = z.object({
   adapter: z.literal('stomp'),
-  url: nonEmpty,
+  url: brokerUrl,
   destinations: names,
   channel,
 });
 
 const thingsboard = z.object({
   adapter: z.literal('thingsboard'),
-  url: nonEmpty,
+  url: thingsboardUrl,
   entityIds: names,
   keys: names.optional(),
   channel,
@@ -29,7 +41,7 @@ const thingsboard = z.object({
 
 const influx = z.object({
   adapter: z.literal('influx'),
-  url: nonEmpty.optional(),
+  url: httpUrl.optional(),
   org: nonEmpty,
   bucket: nonEmpty,
   measurement: nonEmpty.optional(),
@@ -38,7 +50,7 @@ const influx = z.object({
 
 const http = z.object({
   adapter: z.literal('http'),
-  url: nonEmpty,
+  url: httpUrl,
   method: z.enum(['GET', 'POST']).optional(),
   intervalMs: z.number().positive().optional(),
   channel,
@@ -46,7 +58,7 @@ const http = z.object({
 
 const file = z.object({
   adapter: z.literal('file'),
-  url: nonEmpty,
+  url: fileUrl,
   format: z.enum(['csv', 'parquet', 'json']).optional(),
   channel,
 });

@@ -1,3 +1,5 @@
+// These tests feed script URLs to the schema to check that it refuses them.
+/* eslint-disable no-script-url */
 import {
   calibrationSchema,
   substrateDescriptorSchema,
@@ -60,5 +62,32 @@ describe('substrateDescriptorSchema', () => {
     expect(substrateDescriptorSchema.safeParse({ source: 'x' }).success).toBe(
       false,
     );
+  });
+
+  it.each([
+    'lib://common/a.jpg',
+    'git://twins/junction7/junction7.jpg',
+    'http://video.example/index.m3u8',
+    'https://grafana.example/d/abc',
+    'blob:https://dtaas.example/0b6e1c4e',
+    'models/a.ifc',
+    '../models/a.ifc',
+  ])('accepts the source %j', (source) => {
+    const descriptor = { adapter: 'image', source };
+    expect(substrateDescriptorSchema.safeParse(descriptor).success).toBe(true);
+  });
+
+  it.each([
+    'javascript:alert(1)',
+    ' JAVASCRIPT:alert(1)',
+    'java\tscript:alert(1)',
+    'data:image/svg+xml,<svg onload=alert(1)>',
+    'vbscript:msgbox(1)',
+    'file:///etc/passwd',
+    'ftp://files.example/a.jpg',
+    '//evil.example/a.jpg',
+  ])('refuses the source %j', (source) => {
+    const descriptor = { adapter: 'image', source };
+    expect(substrateDescriptorSchema.safeParse(descriptor).success).toBe(false);
   });
 });

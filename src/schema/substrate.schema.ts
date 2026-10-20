@@ -1,15 +1,26 @@
 import { z } from 'zod';
-import { nonEmpty, pointSchema } from 'src/schema/common.schema';
+import { listOf, nonEmpty, pointSchema } from 'src/schema/common.schema';
+import { urlSchema } from 'src/schema/url.schema';
 
 const MIN_HOMOGRAPHY_POINTS = 4;
+
+/**
+ * What a pane loads. `lib://` and `git://` name a twin's library or repository
+ * files and the host resolves them, `blob:` is a file the user opened in the
+ * browser, and a relative path is resolved against the twin.
+ */
+const sourceUrl = urlSchema({
+  schemes: ['lib', 'git', 'http', 'https', 'blob'],
+  relative: true,
+});
 
 /** Maps image coordinates onto world coordinates for image substrates. */
 export const calibrationSchema = z
   .object({
     type: z.literal('homography'),
     id: nonEmpty,
-    imagePoints: z.array(pointSchema).min(MIN_HOMOGRAPHY_POINTS),
-    worldPoints: z.array(pointSchema).min(MIN_HOMOGRAPHY_POINTS),
+    imagePoints: listOf(pointSchema).min(MIN_HOMOGRAPHY_POINTS),
+    worldPoints: listOf(pointSchema).min(MIN_HOMOGRAPHY_POINTS),
     units: z.enum(['m', 'cm', 'mm', 'px']).optional(),
     reprojectionError: z.number().nonnegative().optional(),
   })
@@ -21,7 +32,7 @@ export const calibrationSchema = z
 /** One pane's substrate: which adapter renders what source. */
 export const substrateDescriptorSchema = z.object({
   adapter: nonEmpty,
-  source: nonEmpty.optional(),
+  source: sourceUrl.optional(),
   calibration: calibrationSchema.optional(),
   latencyHintMs: z.number().nonnegative().optional(),
   timeParams: z.tuple([nonEmpty, nonEmpty]).optional(),
