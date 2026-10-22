@@ -5,7 +5,11 @@ import { urlSchema } from 'src/schema/url.schema';
 const channel = channelSchema.optional();
 const names = listOf(nonEmpty).min(1);
 
-/** Brokers speak MQTT or STOMP over a WebSocket, or MQTT over TCP. */
+/**
+ * Brokers speak MQTT or STOMP over a WebSocket, or MQTT over TCP. The URL is
+ * optional: without it, the host serves the topics through its own signals
+ * gateway, so a declaration names what it reads and not where the broker is.
+ */
 const brokerUrl = urlSchema({ schemes: ['ws', 'wss', 'mqtt', 'mqtts'] });
 const httpUrl = urlSchema({ schemes: ['http', 'https'] });
 /** ThingsBoard serves REST over HTTP and telemetry over a WebSocket. */
@@ -18,7 +22,7 @@ const fileUrl = urlSchema({
 
 const mqtt = z.object({
   adapter: z.literal('mqtt'),
-  url: brokerUrl,
+  url: brokerUrl.optional(),
   topics: names,
   channel,
   qos: z.union([z.literal(0), z.literal(1), z.literal(2)]).optional(),
@@ -26,7 +30,7 @@ const mqtt = z.object({
 
 const stomp = z.object({
   adapter: z.literal('stomp'),
-  url: brokerUrl,
+  url: brokerUrl.optional(),
   destinations: names,
   channel,
 });
