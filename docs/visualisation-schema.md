@@ -64,7 +64,7 @@ Discriminated on `adapter`:
 
 | `adapter`     | Required fields         | Optional                                       | `url` schemes                              |
 | ------------- | ----------------------- | ---------------------------------------------- | ------------------------------------------ |
-| `mqtt`        | `url`, `topics[]`       | `channel`, `qos`                               | `ws`, `wss`, `mqtt`, `mqtts`               |
+| `mqtt`        | `topics[]`              | `url`, `channel`, `qos`                        | `ws`, `wss`, `mqtt`, `mqtts`               |
 | `stomp`       | `url`, `destinations[]` | `channel`                                      | `ws`, `wss`, `mqtt`, `mqtts`               |
 | `thingsboard` | `url`, `entityIds[]`    | `keys[]`, `channel`                            | `http`, `https`, `ws`, `wss`               |
 | `influx`      | `org`, `bucket`         | `url`, `measurement`, `role: "history"`        | `http`, `https`                            |
@@ -75,7 +75,7 @@ Discriminated on `adapter`:
 
 A `url` with any other scheme is refused, including `javascript:`, `data:`, `vbscript:` and `file:`. Only the `file` transport takes a path without a scheme, which the host resolves in the library, and a path that names another host is refused.
 
-The `url` of an `mqtt` transport stays required. The host may still serve the signals through a gateway of its own instead of opening the broker URL in the browser, so the `url` names the broker the twin publishes to, and the host decides how the browser reaches it.
+The `url` of an `mqtt` transport is optional. A host with a signals gateway serves the topics itself, so a declaration can name the topics it reads and leave the broker to the host. A `url` that is given is still checked against the schemes above. The DTaaS client never opens it: its signals gateway serves the topics and ignores the `url`.
 
 ## Anchors
 

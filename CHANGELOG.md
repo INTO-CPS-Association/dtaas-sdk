@@ -6,6 +6,10 @@ package adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- `./schema` makes the `url` of an `mqtt` transport optional. A host with a signals gateway serves the topics itself, so a `visualisation.json` can name the topics it reads and leave the broker to the host. A declaration that gives a URL is still valid, and the URL scheme is still checked. The `url` of a `stomp` transport stays required.
+
 ### Security
 
 - `./schema` refuses a transport `url` or a substrate `source` whose scheme is not allowed, so `javascript:`, `data:`, `vbscript:` and `file:` URLs no longer pass `parseVisualisationAsset`. MQTT and STOMP transports take `ws`, `wss`, `mqtt` and `mqtts`. ThingsBoard takes `http`, `https`, `ws` and `wss`. InfluxDB and HTTP take `http` and `https`. A file transport takes `http`, `https`, `lib` or a relative path. A substrate source takes `lib`, `git`, `http`, `https`, `blob` or a relative path. Schemes are read with the browser's URL parser, so case and embedded tabs do not hide a scheme, and a relative path that names another host is refused.

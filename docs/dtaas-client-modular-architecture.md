@@ -115,7 +115,8 @@ visualisation core** plus zero or more **domain extensions**, where:
    kit. A kit may *add* a substrate adapter (a P&ID schematic renderer, say),
    but never bundle a private copy of a standard one.
 10. **The installed stack is consumed, not duplicated.** Live data comes from
-    the deployed RabbitMQ (MQTT and AMQP), history from InfluxDB, the device
+    the deployed RabbitMQ (MQTT and AMQP) and history from InfluxDB, both
+    through the platform's signals gateway (§13, item 4), the device
     registry from ThingsBoard, charts from an embedded Grafana, and versioned
     persistence from GitLab through `@gitbeaker/rest` (R10). This settles the
     transport question left open in issue 1762.
@@ -196,7 +197,7 @@ flowchart TB
     Services --> Registry
   end
   subgraph viz["@into-cps-association/dtaas-visualisation (common core)"]
-    Transport["transport/<br/>mqtt · stomp · thingsboard · influx · http · file"]
+    Transport["transport/<br/>signals gateway · thingsboard · http · file"]
     Store["store/<br/>hot ring buffers · InfluxDB cold tier · playhead · valueAt()"]
     Anchor["anchor/<br/>schema · resolver registry · homography registry"]
     Encoding["encoding/<br/>vocabulary · evaluators · scales · presets registry"]
@@ -254,7 +255,7 @@ companion report's six layers, with the additional observation that
 
 | Layer | Common (`dtaas-visualisation`) | Domain kit contributes | Host contributes |
 | --- | --- | --- | --- |
-| **1 Transport** | `SignalSample` shape; adapters for MQTT/WSS and AMQP/Web-STOMP against the deployed RabbitMQ, ThingsBoard WebSocket telemetry, InfluxDB `range()`, HTTP/SQL, file replay (CSV/Parquet) | Nothing. A kit names *which* topics or buckets in its presets; it never opens a socket. | Endpoint discovery from `env.js` (broker URL, Influx org, ThingsBoard host) |
+| **1 Transport** | `SignalSample` shape; a transport against the platform's signals gateway, which reads the deployed RabbitMQ and InfluxDB on the server and serves live values as server-sent events and `range()` over HTTP; ThingsBoard WebSocket telemetry, HTTP/SQL, file replay (CSV/Parquet) | Nothing. A kit names *which* topics or buckets in its presets; it never opens a socket. | Endpoint discovery from `env.js` (signals gateway URL, ThingsBoard host) |
 | **2 Temporal store** | Hot ring buffers per `(signalPath, channel)`; InfluxDB cold tier; one playhead; `valueAt(path, channel, t)`; measured / simulated / predicted / setpoint channels | Nothing. | Playhead and connection status in Redux (`state.viz`); buffers outside Redux |
 | **3 Anchor resolution** | `Anchor` schema; resolver registry; homography registry for image substrates; `tb-entity` resolver against ThingsBoard | **Domain anchor kinds and resolvers**: `ifc-guid` (bim), `turbine:<id>/<component>` (wind), `epanet:<node\|link>` (pump). Migration from `.manifest.json`. | Nothing |
 | **4 Encoding** | Vocabulary (`colorScale`, `visibility`, `transform`, `flow`, `residual`, `ghost`, `label`, `attention`, `glyph`, `regionFill`, `fieldOverlay`, `trajectory`); evaluators; colour scales | **Presets**: named, domain-typed encoding bundles such as "thermal comfort per room", "power curve deviation", "network pressure". Also **domain scoping rules** (bim: per room / floor via the IFC spatial tree; pump: per pressure zone). | Nothing |
@@ -290,7 +291,7 @@ those substrates meaningful for a turbine.
 
 | In `bim-kit` 0.1.1 | Destination | Why |
 | --- | --- | --- |
-| MQTT subscription | `dtaas-visualisation/transport/mqtt` | Common (R3, R10) |
+| MQTT subscription | The core's transport to the signals gateway | Common (R3, R10) |
 | `.manifest.json` sensor → object → topic | `anchors` + `transports` sections of `visualisation.json`; `bim-kit` ships a one-time migration | Authored anchoring is common; the IFC key is the domain part (R2) |
 | three.js scene, `web-ifc` load | `substrates/aec` (`@thatopen`), with `bim-kit` providing the IFC → fragments converter | Substrate, not domain (goal 9) |
 | Heatmap colour scale and thresholds | `encoding/colorScale` + a `bim-kit` preset | Common vocabulary, domain preset |
@@ -366,8 +367,9 @@ hoped for.
 This replaces the direct imports that `Bim.tsx` makes today and, more
 importantly, replaces the single `live.subscribe(topic)` of the first draft
 with the common core's transport-and-store contract. Issue 1762's
-"RabbitMQ or platform service?" question is answered in one place: both,
-through adapters the core owns.
+"RabbitMQ or platform service?" question is answered in one place: the
+platform's signals gateway, which reads RabbitMQ on the server, through a
+transport the core owns.
 
 ```ts
 export interface HostServices {
@@ -398,7 +400,7 @@ export interface HostServices {
 
   /** The common core, layers 1–4. Extensions consume, never re-implement. */
   signals: {
-    /** Live subscription through the deployed RabbitMQ / ThingsBoard adapters. */
+    /** Live subscription through the platform's signals gateway (or ThingsBoard). */
     subscribe(paths: string[], channel: Channel, sink: (s: SignalSample) => void): () => void;
     /** Read at the playhead. Hot ring buffer first, InfluxDB backfill when outside the live window. */
     valueAt(path: string, channel: Channel, t?: number): Sampled | undefined;
@@ -462,7 +464,7 @@ into made explicit:
 ```text
 client/viz/
   src/
-    transport/       # L1: mqtt, stomp, thingsboard, influx, http, file
+    transport/       # L1: signals gateway, thingsboard, http, file
     store/           # L2: hot ring buffers + InfluxDB cold tier, playhead, valueAt()
     anchor/          # L3: schema, resolver registry, homography registry
     encoding/        # L4: vocabulary, evaluators, scales, preset registry
@@ -594,7 +596,7 @@ export const extensions: readonly DtaasExtension[] = [bim, wind];
 | `src/route/workbench/Workbench.tsx` | Where a twin's layout declares an `embed` pane for the VNC desktop, present it beside the web viewer. |
 | `src/route/account/Account.tsx` | "Extensions" section listing id, name, version, enabled, and which anchor kinds / presets / substrates each registered. |
 | `src/route/bim/` | **Deleted.** Wiring moves into `bim-kit/src/dtaas/`; the renderer moves into `viz/substrates/aec`. |
-| `config/*.js` | New keys: `REACT_APP_EXTENSIONS_DISABLED`; `REACT_APP_VIZ_MQTT_URL`, `REACT_APP_VIZ_STOMP_URL`, `REACT_APP_VIZ_INFLUX_URL/ORG`, `REACT_APP_VIZ_THINGSBOARD_URL`, `REACT_APP_VIZ_GRAFANA_URL`, `REACT_APP_VIZ_PERSIST: 'library' \| 'gitlab'`; `REACT_APP_EXT_<ID>_*` per extension. |
+| `config/*.js` | New keys: `REACT_APP_EXTENSIONS_DISABLED`; `REACT_APP_VIZ_SIGNALS_URL`, `REACT_APP_VIZ_ALLOWED_ORIGINS`, `REACT_APP_VIZ_THINGSBOARD_URL`, `REACT_APP_VIZ_GRAFANA_URL`, `REACT_APP_VIZ_PERSIST: 'library' \| 'gitlab'`; `REACT_APP_EXT_<ID>_*` per extension. |
 | `vite.config.ts` | `manualChunks`: one chunk per extension `id` **and one per substrate** (`viz-aec`, `viz-mesh`, `viz-image`, …), so a twin downloads only the substrates it declares. |
 | `servers/lib` | MIME types for `.glb`, `.ifc`, `.frag`; HTTP range requests for large images and models. The one server-side change this document asks for. |
 
@@ -680,7 +682,7 @@ on a photograph, arrives before any renderer is migrated.
 | --- | --- | --- | --- | --- |
 | 1 | Create `client/sdk/` with the §6 types, `useHost`, `fakeHostServices()`. Publish `dtaas-sdk@1.0.0-alpha.1`. | DTaaS | — | build + typecheck |
 | 2 | Extract `contentsClient.ts` from `persistGeometry.ts`; add `gitClient.ts` over the existing gitbeaker use. | DTaaS | — | existing 36 unit tests pass |
-| 3 | **Create `client/viz/` with layers 1–4 and no substrate**: `SignalSample`; MQTT + STOMP adapters against the deployed RabbitMQ; InfluxDB `range()`; file replay; hot/cold store; playhead; anchor schema; encoding vocabulary; `visualisation.json` schema. | DTaaS | **0** | fixture-replay test emits correct encodings with no canvas |
+| 3 | **Create `client/viz/` with layers 1–4 and no substrate**: `SignalSample`; a transport against the platform's signals gateway, which serves RabbitMQ topics and InfluxDB `range()` from the server; file replay; hot/cold store; playhead; anchor schema; encoding vocabulary; `visualisation.json` schema. | DTaaS | **0** | fixture-replay test emits correct encodings with no canvas |
 | 4 | `HostProvider` implementing all of `HostServices`, instantiating the core from `env.js`. `createExtensionHost` + `ext.slice` + `extensions.ts = []`. `client-no-ext` CI job. | DTaaS | 0 | registry unit tests; CI green with `[]` |
 | 5 | **`image` and `embed` substrates + generic Visualise tab**: `TwinViewer`, `Timeline`, `Calibrator`; Grafana panel driven by the playhead; `visualisation` asset type in the Library. | DTaaS | **1** | live MQTT values on a photograph; scrub moves the embedded Grafana panel; no 3D in the build |
 | 6 | **`aec` substrate** on `@thatopen`; ThingsBoard registry adapter for `tb-entity` anchors. | DTaaS | 2 | a building twin recolours by measured value through the same core |
@@ -716,10 +718,16 @@ kit that ships no renderer, which is the sign goal 9 is met.
    (simplest, no history) or GitLab (versioned, reviewable, needs the
    deployment's GitLab to hold the DT). `REACT_APP_VIZ_PERSIST` selects; the
    core supports both. Recommend GitLab where available.
-4. **Live data transport.** *Resolved* by increment 3: the core's adapters
-   against the deployed RabbitMQ (MQTT and AMQP) and ThingsBoard, with InfluxDB
-   for history. What remains open is only the ThingsBoard-versus-direct-MQTT
-   choice per deployment, which is configuration.
+4. **Live data transport.** *Resolved* by increment 3 as built in
+   [DTaaS#1879](https://github.com/INTO-CPS-Association/DTaaS/pull/1879): the
+   browser reads live values and history from a signals gateway behind the
+   DTaaS sign-in, sending the user's GitLab token. The gateway serves only the
+   topics that the committed `visualisation.json` of a twin the user can read
+   declares, and reads RabbitMQ and InfluxDB with read-only credentials kept on
+   the server. This is the Backend-for-Frontend pattern of RFC 10017, OAuth 2.0
+   for Browser-Based Applications. A `visualisation.json` therefore names
+   topics and no broker address, and a twin reads only the vhost, the org and
+   the bucket of its own owner. What remains open is the ThingsBoard adapter.
 5. **Licence of the common core.** The core is the package most worth
    publishing under an OSI licence (§11.2). This needs an association decision
    before `dtaas-visualisation@1.0.0`.
