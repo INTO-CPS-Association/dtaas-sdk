@@ -62,20 +62,20 @@ worldPoints, units?, reprojectionError? }` with at least four point pairs
 
 Discriminated on `adapter`:
 
-| `adapter`     | Required fields      | Optional                                       | `url` schemes                              |
-| ------------- | -------------------- | ---------------------------------------------- | ------------------------------------------ |
-| `mqtt`        | `topics[]`           | `url`, `channel`, `qos`                        | `ws`, `wss`, `mqtt`, `mqtts`               |
-| `stomp`       | `destinations[]`     | `url`, `channel`                               | `ws`, `wss`, `mqtt`, `mqtts`               |
-| `thingsboard` | `url`, `entityIds[]` | `keys[]`, `channel`                            | `http`, `https`, `ws`, `wss`               |
-| `influx`      | `org`, `bucket`      | `url`, `measurement`, `role: "history"`        | `http`, `https`                            |
-| `http`        | `url`                | `method`, `intervalMs`, `channel`              | `http`, `https`                            |
-| `file`        | `url`                | `format` (`csv`, `parquet`, `json`), `channel` | `http`, `https`, `lib`, or a relative path |
+| `adapter`     | Required fields         | Optional                                       | `url` schemes                              |
+| ------------- | ----------------------- | ---------------------------------------------- | ------------------------------------------ |
+| `mqtt`        | `topics[]`              | `url`, `channel`, `qos`                        | `ws`, `wss`, `mqtt`, `mqtts`               |
+| `stomp`       | `url`, `destinations[]` | `channel`                                      | `ws`, `wss`, `mqtt`, `mqtts`               |
+| `thingsboard` | `url`, `entityIds[]`    | `keys[]`, `channel`                            | `http`, `https`, `ws`, `wss`               |
+| `influx`      | `org`, `bucket`         | `url`, `measurement`, `role: "history"`        | `http`, `https`                            |
+| `http`        | `url`                   | `method`, `intervalMs`, `channel`              | `http`, `https`                            |
+| `file`        | `url`                   | `format` (`csv`, `parquet`, `json`), `channel` | `http`, `https`, `lib`, or a relative path |
 
 `channel` is one of `measured`, `simulated`, `predicted`, `setpoint`.
 
 A `url` with any other scheme is refused, including `javascript:`, `data:`, `vbscript:` and `file:`. Only the `file` transport takes a path without a scheme, which the host resolves in the library, and a path that names another host is refused.
 
-The `url` of an `mqtt` or a `stomp` transport is optional. Without it, the host serves the topics through its own signals gateway, so the declaration names what it reads and not where the broker is. A `url` that is given is still checked against the schemes above.
+The `url` of an `mqtt` transport is optional. A host with a signals gateway serves the topics itself, so a declaration can name the topics it reads and leave the broker to the host. A `url` that is given is still checked against the schemes above. The DTaaS client never opens it: its signals gateway serves the topics and ignores the `url`.
 
 ## Anchors
 

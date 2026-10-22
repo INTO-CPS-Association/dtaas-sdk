@@ -197,7 +197,7 @@ flowchart TB
     Services --> Registry
   end
   subgraph viz["@into-cps-association/dtaas-visualisation (common core)"]
-    Transport["transport/<br/>mqtt · stomp · thingsboard · influx · http · file"]
+    Transport["transport/<br/>signals gateway · thingsboard · http · file"]
     Store["store/<br/>hot ring buffers · InfluxDB cold tier · playhead · valueAt()"]
     Anchor["anchor/<br/>schema · resolver registry · homography registry"]
     Encoding["encoding/<br/>vocabulary · evaluators · scales · presets registry"]
@@ -291,7 +291,7 @@ those substrates meaningful for a turbine.
 
 | In `bim-kit` 0.1.1 | Destination | Why |
 | --- | --- | --- |
-| MQTT subscription | `dtaas-visualisation/transport/mqtt` | Common (R3, R10) |
+| MQTT subscription | The core's transport to the signals gateway | Common (R3, R10) |
 | `.manifest.json` sensor → object → topic | `anchors` + `transports` sections of `visualisation.json`; `bim-kit` ships a one-time migration | Authored anchoring is common; the IFC key is the domain part (R2) |
 | three.js scene, `web-ifc` load | `substrates/aec` (`@thatopen`), with `bim-kit` providing the IFC → fragments converter | Substrate, not domain (goal 9) |
 | Heatmap colour scale and thresholds | `encoding/colorScale` + a `bim-kit` preset | Common vocabulary, domain preset |
@@ -367,8 +367,9 @@ hoped for.
 This replaces the direct imports that `Bim.tsx` makes today and, more
 importantly, replaces the single `live.subscribe(topic)` of the first draft
 with the common core's transport-and-store contract. Issue 1762's
-"RabbitMQ or platform service?" question is answered in one place: both,
-through adapters the core owns.
+"RabbitMQ or platform service?" question is answered in one place: the
+platform's signals gateway, which reads RabbitMQ on the server, through a
+transport the core owns.
 
 ```ts
 export interface HostServices {
@@ -463,7 +464,7 @@ into made explicit:
 ```text
 client/viz/
   src/
-    transport/       # L1: mqtt, stomp, thingsboard, influx, http, file
+    transport/       # L1: signals gateway, thingsboard, http, file
     store/           # L2: hot ring buffers + InfluxDB cold tier, playhead, valueAt()
     anchor/          # L3: schema, resolver registry, homography registry
     encoding/        # L4: vocabulary, evaluators, scales, preset registry
@@ -725,7 +726,8 @@ kit that ships no renderer, which is the sign goal 9 is met.
    declares, and reads RabbitMQ and InfluxDB with read-only credentials kept on
    the server. This is the Backend-for-Frontend pattern of RFC 10017, OAuth 2.0
    for Browser-Based Applications. A `visualisation.json` therefore names
-   topics and no broker address. What remains open is the ThingsBoard adapter.
+   topics and no broker address, and a twin reads only the vhost, the org and
+   the bucket of its own owner. What remains open is the ThingsBoard adapter.
 5. **Licence of the common core.** The core is the package most worth
    publishing under an OSI licence (§11.2). This needs an association decision
    before `dtaas-visualisation@1.0.0`.

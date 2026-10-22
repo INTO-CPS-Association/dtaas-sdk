@@ -81,11 +81,14 @@ describe('transportSchema', () => {
     },
   );
 
-  it.each([
-    { adapter: 'mqtt', topics: ['a/b'] },
-    { adapter: 'stomp', destinations: ['/topic/a'] },
-  ])('accepts a $adapter transport without a broker url', (transport) => {
+  it('accepts an mqtt transport without a broker url', () => {
+    const transport = { adapter: 'mqtt', topics: ['a/b'] };
     expect(transportSchema.safeParse(transport).success).toBe(true);
+  });
+
+  it('keeps the stomp url required', () => {
+    const transport = { adapter: 'stomp', destinations: ['/topic/a'] };
+    expect(transportSchema.safeParse(transport).success).toBe(false);
   });
 
   it('still checks the scheme of a broker url that is given', () => {

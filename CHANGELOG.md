@@ -8,7 +8,7 @@ package adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- `./schema` makes the `url` of an `mqtt` or a `stomp` transport optional. Without it, the host serves the topics through its signals gateway, so a `visualisation.json` names what it reads and not where the broker is. A declaration that gives a URL is still valid, and the URL scheme is still checked.
+- `./schema` makes the `url` of an `mqtt` transport optional. A host with a signals gateway serves the topics itself, so a `visualisation.json` can name the topics it reads and leave the broker to the host. A declaration that gives a URL is still valid, and the URL scheme is still checked. The `url` of a `stomp` transport stays required.
 
 ### Security
 
