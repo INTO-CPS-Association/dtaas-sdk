@@ -6,6 +6,10 @@ package adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- `./schema` checks that every encoding reads a signal some transport provides. An encoding reads its `target` on `measured` or on the `channel` it names, and a `residual` also reads it on its `against` channel. An `mqtt` transport provides the paths its topics match, with MQTT wildcards, and the other adapters provide any path on their channel, which is `measured` when none is named. A binding that reads a signal no transport provides is refused with an issue that names the binding, the signal and the channel.
+
 ### Changed
 
 - `./schema` makes the `url` of an `mqtt` transport optional. A host with a signals gateway serves the topics itself, so a `visualisation.json` can name the topics it reads and leave the broker to the host. A declaration that gives a URL is still valid, and the URL scheme is still checked. The `url` of a `stomp` transport stays required.

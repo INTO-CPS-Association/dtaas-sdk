@@ -36,6 +36,7 @@ The schema rejects:
 - a binding whose `substrate` is not a key of `substrates`;
 - an anchor whose `homographyId` is not the `id` of a substrate's calibration;
 - a binding with both, or neither, of `encoding` and `preset`.
+- a binding that reads a signal no transport provides. An encoding reads its `target` on the `measured` channel, or on the `channel` a `colorScale` or `ghost` names, and a `residual` also reads its `target` on its `against` channel. A preset binding needs its `target` on any channel. A transport carries its `channel`, or `measured` when it names none. An `mqtt` transport provides the signal paths its `topics` match, with `+` and `#` as MQTT wildcards, because a topic is the signal path. The other adapters name entities, buckets or files, so they provide any signal path on their channel.
 
 ## Substrate descriptor
 
