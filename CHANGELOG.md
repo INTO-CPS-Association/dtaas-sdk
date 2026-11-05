@@ -12,6 +12,7 @@ package adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Security
 
+- `./schema` refuses a transport `url` or a substrate `source` that carries a user name or password, such as `mqtt://user:secret@broker`, so a `visualisation.json` committed to a repository can never hold a broker or database credential.
 - `./schema` refuses a transport `url` or a substrate `source` whose scheme is not allowed, so `javascript:`, `data:`, `vbscript:` and `file:` URLs no longer pass `parseVisualisationAsset`. MQTT and STOMP transports take `ws`, `wss`, `mqtt` and `mqtts`. ThingsBoard takes `http`, `https`, `ws` and `wss`. InfluxDB and HTTP take `http` and `https`. A file transport takes `http`, `https`, `lib` or a relative path. A substrate source takes `lib`, `git`, `http`, `https`, `blob` or a relative path. Schemes are read with the browser's URL parser, so case and embedded tabs do not hide a scheme, and a relative path that names another host is refused.
 - `./schema` limits every string in a `visualisation.json` to 2048 characters and every list to 1000 items, so an oversized asset is refused before a host renders it.
 

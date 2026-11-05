@@ -73,7 +73,7 @@ Discriminated on `adapter`:
 
 `channel` is one of `measured`, `simulated`, `predicted`, `setpoint`.
 
-A `url` with any other scheme is refused, including `javascript:`, `data:`, `vbscript:` and `file:`. Only the `file` transport takes a path without a scheme, which the host resolves in the library, and a path that names another host is refused.
+A `url` with any other scheme is refused, including `javascript:`, `data:`, `vbscript:` and `file:`. A `url` or a `source` that carries a user name or password, as in `mqtt://user:secret@broker`, is refused, so a declaration committed to a repository never holds a credential. Only the `file` transport takes a path without a scheme, which the host resolves in the library, and a path that names another host is refused.
 
 The `url` of an `mqtt` transport is optional. A host with a signals gateway serves the topics itself, so a declaration can name the topics it reads and leave the broker to the host. A `url` that is given is still checked against the schemes above. The DTaaS client never opens it: its signals gateway serves the topics and ignores the `url`.
 

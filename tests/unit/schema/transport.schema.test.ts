@@ -96,6 +96,18 @@ describe('transportSchema', () => {
     expect(transportSchema.safeParse(transport).success).toBe(false);
   });
 
+  it.each([
+    ['mqtt', 'mqtt://guest:guest@rabbitmq:1883'],
+    ['stomp', 'wss://user@broker/stomp'],
+    ['thingsboard', 'https://tenant:secret@tb'],
+    ['influx', 'http://admin:secret@influx:8086'],
+    ['http', 'https://user:token@logger/api'],
+    ['file', 'https://user:secret@f/run.csv'],
+  ])('refuses a %s URL that carries credentials', (adapter, url) => {
+    const result = transportSchema.safeParse(transportFor(adapter, url));
+    expect(result.success).toBe(false);
+  });
+
   it('refuses more than 1000 topics', () => {
     const topics = Array.from({ length: 1001 }, (_, i) => `t/${i}`);
     const transport = { adapter: 'mqtt', url: 'wss://b/ws', topics };
