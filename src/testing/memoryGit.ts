@@ -1,5 +1,5 @@
-import type { FileChange, GitService } from 'src/host/storage.types';
-import toBytes from 'src/testing/bytes';
+import type { FileChange, GitService } from '../host/storage.types';
+import toBytes from './bytes';
 
 export interface RecordedCommit {
   readonly repo: string;

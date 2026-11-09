@@ -1,28 +1,35 @@
 // Constants
 export {
   CHANNELS,
+  DEPLOYED_EXTENSIONS_GLOBAL,
+  deployedKeyOf,
   EXTENSION_ENV_PREFIX,
+  EXTENSIONS_DEPLOYED_KEY,
   EXTENSIONS_DISABLED_KEY,
   RESERVED_EXTENSION_IDS,
   SDK_MAJOR,
+  SDK_VERSION,
+  SHARED_MODULES,
+  SHARED_MODULES_GLOBAL,
   STANDARD_ANCHOR_KINDS,
   STANDARD_SUBSTRATES,
-} from 'src/extension/constants';
+} from './extension/constants';
 
 // Extension helpers
-export { default as defineExtension } from 'src/extension/defineExtension';
+export { default as defineExtension } from './extension/defineExtension';
 export {
   envPrefix,
   isExtensionDisabled,
   readExtensionConfig,
-} from 'src/extension/extensionConfig';
-export type { EnvRecord } from 'src/extension/extensionConfig';
-export { isLazyComponent, isLazyLoader } from 'src/extension/lazy';
-export { default as validateExtension } from 'src/extension/validateExtension';
+} from './extension/extensionConfig';
+export type { EnvRecord } from './extension/extensionConfig';
+export { isLazyComponent, isLazyLoader } from './extension/lazy';
+export { isApiRange, satisfiesApiRange } from './extension/apiRange';
+export { default as validateExtension } from './extension/validateExtension';
 export type {
   ValidateOptions,
   ValidationResult,
-} from 'src/extension/validateExtension';
+} from './extension/validateExtension';
 
 // Extension contract
 export type {
@@ -37,14 +44,16 @@ export type {
   ExtensionRoute,
   LazyPage,
   NavigationItem,
-} from 'src/extension/extension.types';
+  ProvidedService,
+} from './extension/extension.types';
 
 // Host services
-export { HostProvider, useHost } from 'src/host/HostProvider';
-export type { HostProviderProps } from 'src/host/HostProvider';
-export type { HostServices } from 'src/host/hostServices.types';
+export { HostProvider, useHost } from './host/HostProvider';
+export type { HostProviderProps } from './host/HostProvider';
+export type { HostServices } from './host/hostServices.types';
 export type {
   AuthService,
+  ExtensionServices,
   LibraryConventions,
   LibraryService,
   Logger,
@@ -53,7 +62,7 @@ export type {
   SnackbarSeverity,
   UiService,
   User,
-} from 'src/host/platform.types';
+} from './host/platform.types';
 export type {
   CommitResult,
   ContentsEntry,
@@ -62,7 +71,7 @@ export type {
   GitService,
   MergeRequestResult,
   PutOptions,
-} from 'src/host/storage.types';
+} from './host/storage.types';
 export type {
   ConnectionState,
   ConnectionStatus,
@@ -72,8 +81,8 @@ export type {
   SignalsService,
   SubstrateRegistry,
   VizService,
-} from 'src/host/visualisation.types';
-export { default as worstConnectionState } from 'src/host/connection';
+} from './host/visualisation.types';
+export { default as worstConnectionState } from './host/connection';
 
 // Visualisation layers
 export type {
@@ -84,24 +93,24 @@ export type {
   SignalSink,
   SignalValue,
   TransportAdapter,
-} from 'src/visualisation/signal.types';
+} from './visualisation/signal.types';
 export type {
   Anchor,
   AnchorKind,
   StandardAnchorKind,
-} from 'src/visualisation/anchor.types';
+} from './visualisation/anchor.types';
 export type {
   Encoding,
   EncodingType,
   ResolvedEncoding,
-} from 'src/visualisation/encoding.types';
+} from './visualisation/encoding.types';
 export type {
   ElementRef,
   FrameOptions,
   SubstrateAdapter,
   SubstrateAdapterFactory,
   SubstrateDescriptor,
-} from 'src/visualisation/substrate.types';
+} from './visualisation/substrate.types';
 export type {
   AnchorKindSpec,
   Converter,
@@ -119,9 +128,10 @@ export type {
   LazySubstrateAdapterSpec,
   ScopeContext,
   ScopeRule,
-} from 'src/visualisation/contribution.types';
+} from './visualisation/contribution.types';
 export type {
   DigitalTwinSummary,
   TbEntity,
-} from 'src/visualisation/digitalTwin.types';
-export type { VisualisationAsset } from 'src/visualisation/asset.types';
+} from './visualisation/digitalTwin.types';
+export type { VisualisationAsset } from './visualisation/asset.types';
+export { SCHEMES, colourAt, position } from './visualisation/schemes';

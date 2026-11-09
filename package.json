@@ -1,6 +1,6 @@
 {
   "name": "@into-cps-association/dtaas-sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Contract for DTaaS web client extensions: extension and host-service types, visualisation schemas, validation helpers, a test harness and a shareable ESLint config.",
   "author": "prasadtalasila <prasad.talasila@gmail.com> (http://prasad.talasila.in/)",
   "license": "SEE LICENSE IN LICENSE.md",
@@ -41,6 +41,11 @@
       "import": "./dist/eslint/index.js",
       "default": "./dist/eslint/index.js"
     },
+    "./deploy": {
+      "types": "./dist/deploy/index.d.ts",
+      "import": "./dist/deploy/index.js",
+      "default": "./dist/deploy/index.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
@@ -56,6 +61,7 @@
   },
   "scripts": {
     "build": "tsup && tsc --project tsconfig.build.json && tsc-alias --project tsconfig.build.json && node scripts/resolve-declaration-paths.mjs dist",
+    "build:kit": "node examples/buildKit.mjs",
     "typecheck": "tsc --project tsconfig.eslint.json --noEmit",
     "clean": "node --eval \"const { rmSync } = require('node:fs'); ['coverage', 'dist'].forEach((path) => rmSync(path, { recursive: true, force: true }))\"",
     "format": "prettier --write \"*.{ts,mjs,json,md}\" \"{src,tests,examples}/**/*.{ts,tsx,mjs,json,md}\" \"docs/*.md\"",
@@ -98,8 +104,11 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.5",
+    "@emotion/react": "11.14.0",
+    "@emotion/styled": "11.14.1",
     "@eslint/eslintrc": "3.3.6",
     "@eslint/js": "10.0.1",
+    "@mui/material": "9.4.0",
     "@reduxjs/toolkit": "2.10.1",
     "@testing-library/dom": "10.4.0",
     "@testing-library/jest-dom": "6.9.1",
@@ -130,6 +139,7 @@
     "tsc-alias": "1.9.1",
     "tsup": "8.5.1",
     "typescript": "6.0.3",
+    "vite": "8.3.1",
     "zod": "4.4.3"
   },
   "// resolutions": "js-yaml 4 for @istanbuljs/load-nyc-config drops js-yaml 3, whose CLI pulls argparse 1 and sprintf-js (GHSA-hp3w-g68c-fv3c, no fixed release). The config loader only calls load(), which js-yaml 4 keeps.",

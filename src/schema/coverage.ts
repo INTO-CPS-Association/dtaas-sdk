@@ -1,7 +1,7 @@
 import type { z } from 'zod';
-import type { Channel } from 'src/visualisation/signal.types';
-import type { encodingSchema } from 'src/schema/encoding.schema';
-import type { transportSchema } from 'src/schema/transport.schema';
+import type { Channel } from '../visualisation/signal.types';
+import type { encodingSchema } from './encoding.schema';
+import type { transportSchema } from './transport.schema';
 
 type Transport = z.infer<typeof transportSchema>;
 type Encoding = z.infer<typeof encodingSchema>;

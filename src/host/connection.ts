@@ -1,4 +1,4 @@
-import type { ConnectionState } from 'src/host/visualisation.types';
+import type { ConnectionState } from './visualisation.types';
 
 const SEVERITY: Record<ConnectionState, number> = {
   live: 0,

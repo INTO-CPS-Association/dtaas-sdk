@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { listOf, nonEmpty, pointSchema } from 'src/schema/common.schema';
-import { urlSchema } from 'src/schema/url.schema';
+import { listOf, nonEmpty, pointSchema } from './common.schema';
+import { urlSchema } from './url.schema';
 
 const MIN_HOMOGRAPHY_POINTS = 4;
 

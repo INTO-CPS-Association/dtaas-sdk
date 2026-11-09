@@ -1,21 +1,15 @@
-import { RESERVED_EXTENSION_IDS } from 'src/extension/constants';
-import {
-  checkIdentity,
-  checkShapes,
-} from 'src/extension/validation/identityRules';
-import checkRequiredFields from 'src/extension/validation/fieldRules';
-import checkLaziness from 'src/extension/validation/lazinessRules';
+import { RESERVED_EXTENSION_IDS, SDK_VERSION } from './constants';
+import { checkIdentity, checkShapes } from './validation/identityRules';
+import checkRequiredFields from './validation/fieldRules';
+import checkLaziness from './validation/lazinessRules';
 import {
   checkDetect,
   checkSubstrates,
   checkUniqueness,
-} from 'src/extension/validation/contributionRules';
-import checkNavigation from 'src/extension/validation/navigationRules';
-import {
-  describe,
-  isObject,
-  type Loose,
-} from 'src/extension/validation/validationUtils';
+} from './validation/contributionRules';
+import checkNavigation from './validation/navigationRules';
+import checkServices from './validation/serviceRules';
+import { describe, isObject, type Loose } from './validation/validationUtils';
 
 export interface ValidationResult {
   readonly valid: boolean;
@@ -25,16 +19,23 @@ export interface ValidationResult {
 export interface ValidateOptions {
   /** Ids the host already uses; defaults to the DTaaS core routes. */
   readonly reservedIds?: readonly string[];
+  /** The API version the host implements; defaults to `SDK_VERSION`. */
+  readonly hostApiVersion?: string;
 }
 
-const runRules = (ext: Loose, reservedIds: readonly string[]): string[] => [
-  ...checkIdentity(ext, reservedIds),
+const runRules = (ext: Loose, options: ValidateOptions): string[] => [
+  ...checkIdentity(
+    ext,
+    options.reservedIds ?? RESERVED_EXTENSION_IDS,
+    options.hostApiVersion ?? SDK_VERSION,
+  ),
   ...checkShapes(ext),
   ...checkRequiredFields(ext),
   ...checkLaziness(ext),
   ...checkUniqueness(ext),
   ...checkNavigation(ext),
   ...checkSubstrates(ext),
+  ...checkServices(ext),
   ...checkDetect(ext),
 ];
 
@@ -51,7 +52,7 @@ const validateExtension = (
     return { valid: false, errors: ['extension must be an object'] };
   }
   try {
-    const errors = runRules(ext, options.reservedIds ?? RESERVED_EXTENSION_IDS);
+    const errors = runRules(ext, options);
     return { valid: errors.length === 0, errors };
   } catch (error) {
     // Getters and proxies can throw; the host must still get a result.

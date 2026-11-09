@@ -1,4 +1,4 @@
-import type { CHANNELS } from 'src/extension/constants';
+import type { CHANNELS } from '../extension/constants';
 
 /** Which value of a signal: what was measured, simulated, predicted or asked for. */
 export type Channel = (typeof CHANNELS)[number];

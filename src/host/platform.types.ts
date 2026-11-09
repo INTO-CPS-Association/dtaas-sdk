@@ -37,6 +37,11 @@ export interface UiService {
   snackbar(message: string, severity: SnackbarSeverity): void;
   /** The host's page shell, so kit pages match the rest of the client. */
   readonly Page: ComponentType<PageProps>;
+  /**
+   * The host's theme, for what a kit draws into a React root of its own,
+   * such as the controls of a substrate.
+   */
+  readonly Theme?: ComponentType<{ readonly children: ReactNode }>;
 }
 
 export interface Logger {
@@ -44,6 +49,12 @@ export interface Logger {
   info(...args: unknown[]): void;
   warn(...args: unknown[]): void;
   error(...args: unknown[]): void;
+}
+
+/** The services other extensions provide, as this extension declared them. */
+export interface ExtensionServices {
+  /** The service with this id. Throws when it is not in `requires`. */
+  get<T>(id: string): T;
 }
 
 export interface SettingsService {

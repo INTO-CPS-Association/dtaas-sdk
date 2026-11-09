@@ -2,8 +2,8 @@ import type {
   ContentsEntry,
   ContentsService,
   PutOptions,
-} from 'src/host/storage.types';
-import toBytes from 'src/testing/bytes';
+} from '../host/storage.types';
+import toBytes from './bytes';
 
 export interface MemoryContents extends ContentsService {
   /** Stored files keyed by normalised path; tests may inspect it. */

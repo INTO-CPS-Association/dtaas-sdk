@@ -5,11 +5,9 @@ import {
   type RenderResult,
 } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { HostProvider } from 'src/host/HostProvider';
-import type { HostServices } from 'src/host/hostServices.types';
-import fakeHostServices, {
-  type FakeHostServices,
-} from 'src/testing/fakeHostServices';
+import { HostProvider } from '../host/HostProvider';
+import type { HostServices } from '../host/hostServices.types';
+import fakeHostServices, { type FakeHostServices } from './fakeHostServices';
 
 export interface RenderWithHostOptions<H extends HostServices> extends Omit<
   RenderOptions,

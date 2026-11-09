@@ -1,8 +1,4 @@
-import {
-  entries,
-  ID_PATTERN,
-  type Loose,
-} from 'src/extension/validation/validationUtils';
+import { entries, ID_PATTERN, type Loose } from './validationUtils';
 
 /** `/bim`, `/bim/x`, `/bim?q` and `/bim#h` are under `/bim`; `/bimx` is not. */
 const isUnder = (path: string, prefix: string) =>

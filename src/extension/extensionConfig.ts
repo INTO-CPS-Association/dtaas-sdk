@@ -1,8 +1,5 @@
 import type { ZodSafeParseResult, ZodType } from 'zod';
-import {
-  EXTENSION_ENV_PREFIX,
-  EXTENSIONS_DISABLED_KEY,
-} from 'src/extension/constants';
+import { EXTENSION_ENV_PREFIX, EXTENSIONS_DISABLED_KEY } from './constants';
 
 export type EnvRecord = Readonly<Record<string, unknown>>;
 

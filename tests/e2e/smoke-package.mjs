@@ -26,9 +26,16 @@ const REQUIRED = [
   ...['README.md', 'LICENSE.md', 'CHANGELOG.md'].map(
     (file) => `package/${file}`,
   ),
-  ...['index', 'schema/index', 'testing/index', 'eslint/index'].flatMap(
-    (entry) => [`package/dist/${entry}.js`, `package/dist/${entry}.d.ts`],
-  ),
+  ...[
+    'index',
+    'schema/index',
+    'testing/index',
+    'eslint/index',
+    'deploy/index',
+  ].flatMap((entry) => [
+    `package/dist/${entry}.js`,
+    `package/dist/${entry}.d.ts`,
+  ]),
 ];
 
 // Argument arrays, no shell; output stays visible so failures are easy to diagnose.
@@ -67,6 +74,8 @@ host.ui.snackbar('ok', 'info');
 assert.equal(host.recorded.snackbars.length, 1);
 const eslint = await import('${name}/eslint');
 assert.ok(Array.isArray(eslint.default));
+const deploy = await import('${name}/deploy');
+assert.equal(deploy.kitBuildConfig({ id: 'smoke', entry: 'x.ts' }).lib.fileName(), 'index.js');
 `;
 
 // The @ts-expect-error lines fail if the SDK's types silently degrade to any.

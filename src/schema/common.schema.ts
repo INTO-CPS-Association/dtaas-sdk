@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CHANNELS } from 'src/extension/constants';
+import { CHANNELS } from '../extension/constants';
 
 /**
  * Upper bounds for any string and any list in a `visualisation.json`. A

@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react';
-import type { Playhead } from 'src/host/visualisation.types';
+import type { Playhead } from '../host/visualisation.types';
 
 export interface FakePlayhead extends Playhead {
   /** Re-renders `use()` consumers; called when live data arrives. */

@@ -1,11 +1,11 @@
 import { z } from 'zod';
-import { listOf, nonEmpty, text } from 'src/schema/common.schema';
-import { anchorSchema } from 'src/schema/anchor.schema';
-import { checkCoverage } from 'src/schema/coverage';
-import { encodingSchema } from 'src/schema/encoding.schema';
-import { encodingPresetSchema } from 'src/schema/preset.schema';
-import { substrateDescriptorSchema } from 'src/schema/substrate.schema';
-import { transportSchema } from 'src/schema/transport.schema';
+import { listOf, nonEmpty, text } from './common.schema';
+import { anchorSchema } from './anchor.schema';
+import { checkCoverage } from './coverage';
+import { encodingSchema } from './encoding.schema';
+import { encodingPresetSchema } from './preset.schema';
+import { substrateDescriptorSchema } from './substrate.schema';
+import { transportSchema } from './transport.schema';
 
 const layoutSchema = z.object({
   type: z.enum(['single', 'split', 'grid', 'tabs']),

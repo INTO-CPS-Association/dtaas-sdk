@@ -1,14 +1,14 @@
 import type { ComponentType, LazyExoticComponent } from 'react';
 import type { z } from 'zod';
-import type { encodingPresetSchema } from 'src/schema/preset.schema';
-import type { HostServices } from 'src/host/hostServices.types';
-import type { Anchor, AnchorKind } from 'src/visualisation/anchor.types';
-import type { DigitalTwinSummary } from 'src/visualisation/digitalTwin.types';
+import type { encodingPresetSchema } from '../schema/preset.schema';
+import type { HostServices } from '../host/hostServices.types';
+import type { Anchor, AnchorKind } from './anchor.types';
+import type { DigitalTwinSummary } from './digitalTwin.types';
 import type {
   ElementRef,
   SubstrateAdapter,
   SubstrateAdapterFactory,
-} from 'src/visualisation/substrate.types';
+} from './substrate.types';
 
 /** A code-split module; calling it is what pulls in heavy code. */
 export type LazyModule<T> = () => Promise<{ default: T }>;

@@ -1,39 +1,36 @@
 // Host services
-export { default as fakeHostServices } from 'src/testing/fakeHostServices';
+export { default as fakeHostServices } from './fakeHostServices';
 export type {
   FakeHostOptions,
   FakeHostServices,
   Recorded,
-} from 'src/testing/fakeHostServices';
-export { default as createFakeSignals } from 'src/testing/fakeSignals';
-export type { FakeSignals, FakeSignalsOptions } from 'src/testing/fakeSignals';
-export type { FakePlayhead } from 'src/testing/fakePlayhead';
-export type { FakeConnection } from 'src/testing/fakeConnection';
-export { default as createFakeViz } from 'src/testing/fakeViz';
-export type { FakeVizOptions, RecordedSave } from 'src/testing/fakeViz';
-export { default as createMemoryContents } from 'src/testing/memoryContents';
-export type { MemoryContents } from 'src/testing/memoryContents';
-export { default as createMemoryGit } from 'src/testing/memoryGit';
+} from './fakeHostServices';
+export { default as createFakeSignals } from './fakeSignals';
+export type { FakeSignals, FakeSignalsOptions } from './fakeSignals';
+export type { FakePlayhead } from './fakePlayhead';
+export type { FakeConnection } from './fakeConnection';
+export { default as createFakeViz } from './fakeViz';
+export type { FakeVizOptions, RecordedSave } from './fakeViz';
+export { default as createMemoryContents } from './memoryContents';
+export type { MemoryContents } from './memoryContents';
+export { default as createMemoryGit } from './memoryGit';
 export type {
   GitRecord,
   RecordedCommit,
   RecordedMergeRequest,
-} from 'src/testing/memoryGit';
+} from './memoryGit';
 
 // Rendering and replay
-export { default as renderWithHost } from 'src/testing/renderWithHost';
-export type { RenderWithHostOptions } from 'src/testing/renderWithHost';
-export { default as replayFixture } from 'src/testing/replayFixture';
-export type { ReplayFrame, ReplayOptions } from 'src/testing/replayFixture';
+export { default as renderWithHost } from './renderWithHost';
+export type { RenderWithHostOptions } from './renderWithHost';
+export { default as replayFixture } from './replayFixture';
+export type { ReplayFrame, ReplayOptions } from './replayFixture';
 
 // Conformance
-export { default as checkConformance } from 'src/testing/checkConformance';
-export type {
-  ConformanceOptions,
-  ConformanceReport,
-} from 'src/testing/checkConformance';
+export { default as checkConformance } from './checkConformance';
+export type { ConformanceOptions, ConformanceReport } from './checkConformance';
 export {
   default as installSocketGuard,
   SocketBlockedError,
-} from 'src/testing/socketGuard';
-export type { SocketGuard } from 'src/testing/socketGuard';
+} from './socketGuard';
+export type { SocketGuard } from './socketGuard';

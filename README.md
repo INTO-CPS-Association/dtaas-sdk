@@ -35,6 +35,7 @@ The package is ESM only.
 | `@into-cps-association/dtaas-sdk/schema`  | zod schemas for `visualisation.json`, encodings, anchors, transports, substrates and presets                      |
 | `@into-cps-association/dtaas-sdk/testing` | `fakeHostServices`, `renderWithHost`, `replayFixture`, `checkConformance`                                         |
 | `@into-cps-association/dtaas-sdk/eslint`  | Flat-config rules that keep an extension inside its boundary                                                      |
+| `@into-cps-association/dtaas-sdk/deploy`  | `kitBuildConfig`, the Vite build settings of a deployed kit, for the kit's `vite.config.ts`                       |
 
 The host bundles only the root entry.
 

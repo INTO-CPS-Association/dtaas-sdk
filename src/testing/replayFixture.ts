@@ -2,8 +2,8 @@ import type {
   Channel,
   Sampled,
   SignalSample,
-} from 'src/visualisation/signal.types';
-import type { FakeSignals } from 'src/testing/fakeSignals';
+} from '../visualisation/signal.types';
+import type { FakeSignals } from './fakeSignals';
 
 export interface ReplayOptions {
   /** Playhead increment in milliseconds. */

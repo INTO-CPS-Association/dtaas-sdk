@@ -1,4 +1,4 @@
-import { nonEmpty } from 'src/schema/common.schema';
+import { nonEmpty } from './common.schema';
 
 /**
  * A placeholder origin for resolving relative paths. A path that resolves to
@@ -42,9 +42,9 @@ const isAllowed = (value: string, rule: UrlRule) => {
 };
 
 /**
- * Whether the URL names a user or a password before its host, as in
- * `mqtt://user:secret@broker`. A declaration is committed to a repository, so
- * a password written into it is readable by everyone who can read the twin.
+ * Whether the URL names a user or a password before its host. A declaration
+ * is committed to a repository, so a password written into it is readable by
+ * everyone who can read the twin.
  */
 const carriesCredentials = (value: string) => {
   try {

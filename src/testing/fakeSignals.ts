@@ -1,20 +1,16 @@
 import type {
   ConnectionState,
   SignalsService,
-} from 'src/host/visualisation.types';
-import type { TbEntity } from 'src/visualisation/digitalTwin.types';
+} from '../host/visualisation.types';
+import type { TbEntity } from '../visualisation/digitalTwin.types';
 import type {
   Channel,
   Sampled,
   SignalSample,
   SignalSink,
-} from 'src/visualisation/signal.types';
-import createFakeConnection, {
-  type FakeConnection,
-} from 'src/testing/fakeConnection';
-import createFakePlayhead, {
-  type FakePlayhead,
-} from 'src/testing/fakePlayhead';
+} from '../visualisation/signal.types';
+import createFakeConnection, { type FakeConnection } from './fakeConnection';
+import createFakePlayhead, { type FakePlayhead } from './fakePlayhead';
 
 export interface FakeSignalsOptions {
   /** Clock used while the playhead is live. Defaults to `Date.now`. */
