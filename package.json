@@ -139,12 +139,13 @@
     "tsc-alias": "1.9.1",
     "tsup": "8.5.1",
     "typescript": "6.0.3",
-    "vite": "8.3.1",
+    "vite": "8.3.5",
     "zod": "4.4.3"
   },
-  "// resolutions": "js-yaml 4 for @istanbuljs/load-nyc-config drops js-yaml 3, whose CLI pulls argparse 1 and sprintf-js (GHSA-hp3w-g68c-fv3c, no fixed release). The config loader only calls load(), which js-yaml 4 keeps.",
+  "// resolutions": "js-yaml 4 for @istanbuljs/load-nyc-config drops js-yaml 3, whose CLI pulls argparse 1 and sprintf-js (GHSA-hp3w-g68c-fv3c, no fixed release). The config loader only calls load(), which js-yaml 4 keeps. rolldown is held at 1.2.16, inside the ~1.2.14 range of vite 8.3.5, because later releases are younger than the ten days a dependency waits before it is installed.",
   "resolutions": {
     "esbuild": "0.28.1",
+    "rolldown": "1.2.16",
     "**/@istanbuljs/load-nyc-config/js-yaml": "4.3.2"
   }
 }
