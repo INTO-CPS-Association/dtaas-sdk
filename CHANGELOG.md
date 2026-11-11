@@ -6,14 +6,20 @@ package adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- `colourAt` keeps a position off the scale at the nearer end of the scheme and
+  gives the first colour for `NaN`, as `position` does for a domain with no
+  width. It threw for a negative position and returned an invalid colour above 1.
+
 ## [0.1.1] - 2026-11-09
 
 ### Added
 
 - `./schema` checks that every encoding reads a signal some transport provides.
-  An encoding reads its `target` on `measured` or on the `channel` it names, and
+  An encoding reads its `target` on `measured` or on the `channel` it names and
   a `residual` also reads it on its `against` channel. An `mqtt` transport
-  provides the paths its topics match, with MQTT wildcards, and the other
+  provides the paths its topics match, with MQTT wildcards. The other
   adapters provide any path on their channel, which is `measured` when none is
   named. A binding that reads a signal no transport provides is refused with an
   issue that names the binding, the signal and the channel.
@@ -22,10 +28,11 @@ package adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   does not include the host's API version, so a host refuses it at start-up
   instead of failing later (requirement K1). An extension without a range is
   checked by its `sdk` major only, as before.
-- `SDK_VERSION`, the version of the extension API this package describes
-  (`1.1.0`), with `satisfiesApiRange` and `isApiRange`. A new contribution point
-  or service raises the minor number and a change an existing extension would
-  notice raises the major number (requirement K10).
+- `SDK_VERSION`, the version of the extension API this package describes,
+  with `satisfiesApiRange` and `isApiRange`. It starts at `1.1.0` with this
+  entry and the entries below raise it to `1.4.0`, its value in this release.
+  A new contribution point or service raises the minor number and a change an
+  existing extension would notice raises the major number (requirement K10).
 - `ValidateOptions.hostApiVersion`, for a host that implements another version
   than the package it was built with.
 - Services between extensions (requirement K12), API version `1.2.0`: an
@@ -58,7 +65,7 @@ package adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `./schema` makes the `url` of an `mqtt` transport optional. A host with a
   signals gateway serves the topics itself, so a `visualisation.json` can name
   the topics it reads and leave the broker to the host. A declaration that gives
-  a URL is still valid, and the URL scheme is still checked. The `url` of a
+  a URL is still valid and the URL scheme is still checked. The `url` of a
   `stomp` transport stays required.
 - `aec` is no longer a standard substrate (requirement K5). The bim extension
   contributes it, so a preset that names `aec` needs an extension that
@@ -77,7 +84,7 @@ package adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   InfluxDB and HTTP take `http` and `https`. A file transport takes `http`,
   `https`, `lib` or a relative path. A substrate source takes `lib`, `git`,
   `http`, `https`, `blob` or a relative path. Schemes are read with the
-  browser's URL parser, so case and embedded tabs do not hide a scheme, and a
+  browser's URL parser, so case and embedded tabs do not hide a scheme. A
   relative path that names another host is refused.
 - `./schema` limits every string in a `visualisation.json` to 2048 characters
   and every list to 1000 items, so an oversized asset is refused before a host

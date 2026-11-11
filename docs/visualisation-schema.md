@@ -36,7 +36,14 @@ The schema rejects:
 - a binding whose `substrate` is not a key of `substrates`;
 - an anchor whose `homographyId` is not the `id` of a substrate's calibration;
 - a binding with both, or neither, of `encoding` and `preset`.
-- a binding that reads a signal no transport provides. An encoding reads its `target` on the `measured` channel, or on the `channel` a `colorScale` or `ghost` names, and a `residual` also reads its `target` on its `against` channel. A preset binding needs its `target` on any channel. A transport carries its `channel`, or `measured` when it names none. An `mqtt` transport provides the signal paths its `topics` match, with `+` and `#` as MQTT wildcards, because a topic is the signal path. The other adapters name entities, buckets or files, so they provide any signal path on their channel.
+- a binding that reads a signal no transport provides. An encoding reads its
+  `target` on the `measured` channel, or on the `channel` a `colorScale` or
+  `ghost` names. A `residual` also reads its `target` on its `against` channel.
+  A preset binding needs its `target` on any channel. A transport carries its
+  `channel`, or `measured` when it names none. An `mqtt` transport provides the
+  signal paths its `topics` match, with `+` and `#` as MQTT wildcards, because a
+  topic is the signal path. The other adapters name entities, buckets or files,
+  so they provide any signal path on their channel.
 
 ## Substrate descriptor
 
@@ -74,7 +81,12 @@ Discriminated on `adapter`:
 
 `channel` is one of `measured`, `simulated`, `predicted`, `setpoint`.
 
-A `url` with any other scheme is refused, including `javascript:`, `data:`, `vbscript:` and `file:`. A `url` or a `source` that carries a user name or password, as in `mqtt://user:secret@broker`, is refused, so a declaration committed to a repository never holds a credential. Only the `file` transport takes a path without a scheme, which the host resolves in the library, and a path that names another host is refused.
+A `url` with any other scheme is refused, including `javascript:`, `data:`,
+`vbscript:` and `file:`. A `url` or a `source` that carries a user name or
+password, as in `mqtt://user:secret@broker`, is refused, so a declaration
+committed to a repository never holds a credential. Only the `file` transport
+takes a path without a scheme, which the host resolves in the library. A path
+that names another host is refused.
 
 The `url` of an `mqtt` transport is optional. A host with a signals gateway serves the topics itself, so a declaration can name the topics it reads and leave the broker to the host. A `url` that is given is still checked against the schemes above. The DTaaS client never opens it: its signals gateway serves the topics and ignores the `url`.
 
