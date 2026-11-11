@@ -30,9 +30,6 @@ if (!dtaas?.id) throw new Error(`${kit}/package.json has no dtaas.id`);
 
 export default defineConfig({
   root,
-  // The kits import their own modules through the `examples/*` alias of the
-  // SDK's tsconfig, so the bundle resolves it the same way.
-  resolve: { alias: { examples } },
   // A kit is a library: nothing of the client's public folder belongs in it.
   publicDir: false,
   logLevel: 'warn',
