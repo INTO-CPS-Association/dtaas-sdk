@@ -37,5 +37,9 @@
     "typescript": "6.0.3",
     "vite": "8.3.5",
     "zod": "4.6.7"
+  },
+  "// resolutions": "rolldown is held at 1.2.16, inside the ~1.2.14 range of vite 8.3.5, because later releases are younger than the ten days a dependency waits before it is installed.",
+  "resolutions": {
+    "rolldown": "1.2.16"
   }
 }
