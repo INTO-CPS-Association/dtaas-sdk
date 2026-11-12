@@ -4,6 +4,15 @@ All notable changes to this package are documented in this file. The format
 is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this
 package adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `./dtaas`: the `aec` substrate, which draws the converted building model
+  on the Visualise tab. dtaas-sdk 0.1.1 no longer lists `aec` as a standard
+  substrate, since a building model is building code (#1912, section 10.2),
+  so the presets of this kit now name a substrate the kit contributes.
+
 ## [0.1.0] - 2026-09-28
 
 ### Added

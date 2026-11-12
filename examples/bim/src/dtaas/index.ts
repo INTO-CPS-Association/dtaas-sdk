@@ -1,6 +1,9 @@
 import { lazy } from 'react';
 import ApartmentIcon from '@mui/icons-material/Apartment';
-import { defineExtension } from '@into-cps-association/dtaas-sdk';
+import {
+  defineExtension,
+  type LazySubstrateAdapterSpec,
+} from '@into-cps-association/dtaas-sdk';
 import anchorKinds from 'src/dtaas/anchors';
 import configSchema from 'src/dtaas/config';
 import converters from 'src/dtaas/converters';
@@ -10,6 +13,14 @@ import presets from 'src/dtaas/presets';
 import scopes from 'src/dtaas/scopes';
 
 const BuildingsPage = lazy(() => import('src/dtaas/pages/BuildingsPage'));
+
+// The building model is building code, so this kit owns the aec substrate
+// (#1912, section 10.2). It loads only when a visualisation draws a building.
+export const AEC_SUBSTRATE: LazySubstrateAdapterSpec = {
+  id: 'aec',
+  supports: ['ifc-guid'],
+  load: () => import('src/aec/aecSubstrate'),
+};
 
 /** The only object the host imports: `import { extension } from '<kit>/dtaas'`. */
 export const extension = defineExtension({
@@ -35,6 +46,7 @@ export const extension = defineExtension({
     converters,
     presets,
     scopes,
+    substrates: [AEC_SUBSTRATE],
   },
 });
 
