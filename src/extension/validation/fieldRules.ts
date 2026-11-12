@@ -5,7 +5,7 @@ import {
   LIST_SPECS,
   type ListSpec,
   type Loose,
-} from 'src/extension/validation/validationUtils';
+} from './validationUtils';
 
 const ARTICLE: Record<FieldKind, string> = {
   string: 'a string',

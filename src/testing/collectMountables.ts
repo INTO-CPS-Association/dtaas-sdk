@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
-import type { DtaasExtension } from 'src/extension/extension.types';
-import type { DigitalTwinSummary } from 'src/visualisation/digitalTwin.types';
+import type { DtaasExtension } from '../extension/extension.types';
+import type { DigitalTwinSummary } from '../visualisation/digitalTwin.types';
 
 /** A page-like element to mount, where to mount it, and with which props. */
 export interface Mountable {

@@ -1,4 +1,4 @@
-import { isLazyComponent, isLazyLoader } from 'src/extension/lazy';
+import { isLazyComponent, isLazyLoader } from '../lazy';
 import {
   entries,
   entryLabel,
@@ -6,7 +6,7 @@ import {
   listSpec,
   type Loose,
   visualisationOf,
-} from 'src/extension/validation/validationUtils';
+} from './validationUtils';
 
 const ELEMENT_LISTS = ['routes', 'digitalTwinTabs', 'assetPreviews'];
 const LOADER_LISTS = [

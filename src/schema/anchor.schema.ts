@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { nonEmpty, text } from 'src/schema/common.schema';
+import { nonEmpty, text } from './common.schema';
 
 /** Ties a signal to a location on a substrate (layer 3). */
 export const anchorSchema = z.object({

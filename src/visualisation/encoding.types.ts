@@ -1,6 +1,6 @@
 import type { z } from 'zod';
-import type { encodingSchema } from 'src/schema/encoding.schema';
-import type { SignalValue } from 'src/visualisation/signal.types';
+import type { encodingSchema } from '../schema/encoding.schema';
+import type { SignalValue } from './signal.types';
 
 /** One rule of the layer-4 vocabulary, discriminated on `type`. */
 export type Encoding = z.infer<typeof encodingSchema>;

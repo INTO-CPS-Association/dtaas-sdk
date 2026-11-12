@@ -1,9 +1,9 @@
 import { useSyncExternalStore } from 'react';
-import worstConnectionState from 'src/host/connection';
+import worstConnectionState from '../host/connection';
 import type {
   ConnectionState,
   ConnectionStatus,
-} from 'src/host/visualisation.types';
+} from '../host/visualisation.types';
 
 export interface FakeConnection extends ConnectionStatus {
   /** Set `paths`, or every path (clearing overrides) when omitted. */

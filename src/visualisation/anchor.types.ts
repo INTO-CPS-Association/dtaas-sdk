@@ -1,6 +1,6 @@
 import type { z } from 'zod';
-import type { STANDARD_ANCHOR_KINDS } from 'src/extension/constants';
-import type { anchorSchema } from 'src/schema/anchor.schema';
+import type { STANDARD_ANCHOR_KINDS } from '../extension/constants';
+import type { anchorSchema } from '../schema/anchor.schema';
 
 export type StandardAnchorKind = (typeof STANDARD_ANCHOR_KINDS)[number];
 

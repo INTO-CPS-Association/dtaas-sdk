@@ -57,6 +57,27 @@ describe('urlSchema', () => {
     expect(accepts(absoluteOnly, long)).toBe(false);
   });
 
+  it.each([
+    'https://user:secret@a.example/x',
+    'https://user@a.example/x',
+    'https://:secret@a.example/x',
+    'HTTPS://user:secret@a.example/x',
+  ])('refuses %j, which carries credentials', (value) => {
+    expect(accepts(withPaths, value)).toBe(false);
+  });
+
+  it('accepts an @ in the path, which is not a credential', () => {
+    expect(accepts(withPaths, 'https://a.example/team@x/run.csv')).toBe(true);
+    expect(accepts(withPaths, 'data/team@x/run.csv')).toBe(true);
+  });
+
+  it('says why a URL with credentials is refused', () => {
+    const result = absoluteOnly.safeParse('https://user:secret@a.example/x');
+    expect(result.error?.issues.map((i) => i.message)).toEqual([
+      'A URL must not carry a user name or password. The host keeps credentials',
+    ]);
+  });
+
   it('names the allowed schemes in the error', () => {
     const result = withPaths.safeParse('javascript:alert(1)');
     expect(result.error?.issues[0].message).toBe(

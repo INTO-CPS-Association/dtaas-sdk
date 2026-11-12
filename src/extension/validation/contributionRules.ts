@@ -1,4 +1,4 @@
-import { STANDARD_SUBSTRATES } from 'src/extension/constants';
+import { STANDARD_SUBSTRATES } from '../constants';
 import {
   describe,
   entries,
@@ -6,7 +6,7 @@ import {
   type ListSpec,
   type Loose,
   visualisationOf,
-} from 'src/extension/validation/validationUtils';
+} from './validationUtils';
 
 const STANDARD: ReadonlySet<string> = new Set(STANDARD_SUBSTRATES);
 

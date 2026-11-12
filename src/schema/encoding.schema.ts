@@ -1,10 +1,5 @@
 import { z } from 'zod';
-import {
-  channelSchema,
-  domainSchema,
-  nonEmpty,
-  text,
-} from 'src/schema/common.schema';
+import { channelSchema, domainSchema, nonEmpty, text } from './common.schema';
 
 const comparisonSchema = z.object({
   op: z.enum(['<', '<=', '>', '>=', '==', '!=']),

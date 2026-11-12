@@ -7,6 +7,7 @@ export default defineConfig({
     'schema/index': 'src/schema/index.ts',
     'testing/index': 'src/testing/index.ts',
     'eslint/index': 'src/eslint/index.ts',
+    'deploy/index': 'src/deploy/index.ts',
   },
   target: 'es2019',
   dts: false,

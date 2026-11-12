@@ -1,5 +1,5 @@
 import { createContext, type ReactNode, useContext } from 'react';
-import type { HostServices } from 'src/host/hostServices.types';
+import type { HostServices } from './hostServices.types';
 
 const HostContext = createContext<HostServices | null>(null);
 

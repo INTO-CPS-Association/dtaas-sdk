@@ -40,6 +40,7 @@ src/
   schema/             ./schema entry: zod schemas
   testing/            ./testing entry: fakes, renderWithHost, replayFixture, checkConformance
   eslint/             ./eslint entry: kit boundary rules
+  deploy/             ./deploy entry: Vite settings for a deployed kit bundle
 tests/
   unit/               mirrors src/
   integration/        hello-kit conformance, fixture replay, asset round trips, ESLint rules
@@ -56,8 +57,9 @@ examples/hello-kit/   the template layout of a domain kit
 - `*.types.ts` for type-only modules, `*.schema.ts` for zod schemas;
   PascalCase for components, camelCase otherwise.
 - A module with one export uses a default export (airbnb-base).
-- Imports inside the package use the `src/*` alias; tests may also use
-  `tests/*` and `examples/*`. The build rewrites aliases to relative paths.
+- Imports inside `src/` are relative, so the sources can be copied into a
+  host as they are. Tests use the `src/*`, `tests/*` and `examples/*`
+  aliases.
 - Types that have a schema are inferred from it with `z.infer`, so the two
   cannot drift. The root entry imports schema modules with `import type` only,
   so `zod` is not a runtime import of the host bundle.

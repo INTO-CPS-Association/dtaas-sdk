@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { listOf, nonEmpty, text } from 'src/schema/common.schema';
-import { encodingSchema } from 'src/schema/encoding.schema';
+import { listOf, nonEmpty, text } from './common.schema';
+import { encodingSchema } from './encoding.schema';
 
 /** Lowercase segments separated by dots, e.g. `bim.thermal-comfort`. */
 const PRESET_ID = /^[a-z][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)*$/;

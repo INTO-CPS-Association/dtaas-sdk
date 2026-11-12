@@ -2,25 +2,23 @@ import type { ZodType } from 'zod';
 import {
   type EnvRecord,
   readExtensionConfig,
-} from 'src/extension/extensionConfig';
-import type { HostServices } from 'src/host/hostServices.types';
+} from '../extension/extensionConfig';
+import type { HostServices } from '../host/hostServices.types';
 import type {
   LibraryService,
   Logger,
   SnackbarSeverity,
   User,
-} from 'src/host/platform.types';
-import type { TbEntity } from 'src/visualisation/digitalTwin.types';
-import FakePage from 'src/testing/FakePage';
-import createFakeSignals, { type FakeSignals } from 'src/testing/fakeSignals';
+} from '../host/platform.types';
+import type { TbEntity } from '../visualisation/digitalTwin.types';
+import FakePage from './FakePage';
+import createFakeSignals, { type FakeSignals } from './fakeSignals';
 import createFakeViz, {
   type FakeVizOptions,
   type RecordedSave,
-} from 'src/testing/fakeViz';
-import createMemoryContents, {
-  type MemoryContents,
-} from 'src/testing/memoryContents';
-import createMemoryGit, { type GitRecord } from 'src/testing/memoryGit';
+} from './fakeViz';
+import createMemoryContents, { type MemoryContents } from './memoryContents';
+import createMemoryGit, { type GitRecord } from './memoryGit';
 
 export interface FakeHostOptions {
   /** Whose `REACT_APP_EXT_<ID>_*` keys `config()` reads. Default `test`. */
@@ -34,6 +32,8 @@ export interface FakeHostOptions {
   readonly files?: Record<string, Uint8Array | string>;
   readonly entities?: readonly TbEntity[];
   readonly viz?: FakeVizOptions;
+  /** Services of other extensions `extensions.get` returns, by id. */
+  readonly services?: Readonly<Record<string, unknown>>;
   /** Replace whole services, e.g. with jest mocks. */
   readonly overrides?: Partial<HostServices>;
 }
@@ -114,6 +114,15 @@ const createSettings = (settings: Readonly<Record<string, unknown>> = {}) => ({
   get: <T>(key: string) => settings[key] as T | undefined,
 });
 
+const createExtensionServices = (
+  services: Readonly<Record<string, unknown>> = {},
+) => ({
+  get: <T>(id: string): T => {
+    if (!(id in services)) throw new Error(`No service ${id} in this host`);
+    return services[id] as T;
+  },
+});
+
 /** A complete, in-memory `HostServices` for testing a kit without DTaaS. */
 const fakeHostServices = (options: FakeHostOptions = {}): FakeHostServices => {
   const recorded = createRecorded();
@@ -129,6 +138,7 @@ const fakeHostServices = (options: FakeHostOptions = {}): FakeHostServices => {
     ui: createUi(recorded),
     logger: createLogger(recorded),
     settings: createSettings(options.settings),
+    extensions: createExtensionServices(options.services),
     config: createConfig(options.extensionId ?? 'test', options.env ?? {}),
     recorded,
     ...options.overrides,

@@ -3,17 +3,17 @@ import type {
   Sampled,
   SignalSample,
   SignalSink,
-} from 'src/visualisation/signal.types';
+} from '../visualisation/signal.types';
 import type {
   DigitalTwinSummary,
   TbEntity,
-} from 'src/visualisation/digitalTwin.types';
-import type { VisualisationAsset } from 'src/visualisation/asset.types';
-import type { SubstrateAdapter } from 'src/visualisation/substrate.types';
+} from '../visualisation/digitalTwin.types';
+import type { VisualisationAsset } from '../visualisation/asset.types';
+import type { SubstrateAdapter } from '../visualisation/substrate.types';
 import type {
   AnchorKindSpec,
   EncodingPreset,
-} from 'src/visualisation/contribution.types';
+} from '../visualisation/contribution.types';
 
 /** One clock for every substrate, embedded panel and video element. */
 export interface Playhead {

@@ -1,14 +1,14 @@
-import type { DtaasExtension } from 'src/extension/extension.types';
-import validateExtension from 'src/extension/validateExtension';
-import { encodingPresetSchema } from 'src/schema/preset.schema';
-import type { DigitalTwinSummary } from 'src/visualisation/digitalTwin.types';
+import type { DtaasExtension } from '../extension/extension.types';
+import validateExtension from '../extension/validateExtension';
+import { encodingPresetSchema } from '../schema/preset.schema';
+import type { DigitalTwinSummary } from '../visualisation/digitalTwin.types';
 import fakeHostServices, {
   type FakeHostOptions,
   type FakeHostServices,
-} from 'src/testing/fakeHostServices';
-import collectMountables from 'src/testing/collectMountables';
-import mountOne from 'src/testing/mountOne';
-import installSocketGuard from 'src/testing/socketGuard';
+} from './fakeHostServices';
+import collectMountables from './collectMountables';
+import mountOne from './mountOne';
+import installSocketGuard from './socketGuard';
 
 export interface ConformanceOptions {
   /** Host passed to `setup()` and every mounted element. */

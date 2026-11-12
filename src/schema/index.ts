@@ -1,28 +1,24 @@
 // Shared building blocks
-export {
-  channelSchema,
-  domainSchema,
-  pointSchema,
-} from 'src/schema/common.schema';
+export { channelSchema, domainSchema, pointSchema } from './common.schema';
 
 // Layer 1: transports
-export { transportSchema } from 'src/schema/transport.schema';
+export { transportSchema } from './transport.schema';
 
 // Layer 3: anchors
-export { anchorSchema } from 'src/schema/anchor.schema';
+export { anchorSchema } from './anchor.schema';
 
 // Layer 4: encodings and presets
-export { encodingSchema } from 'src/schema/encoding.schema';
-export { encodingPresetSchema } from 'src/schema/preset.schema';
+export { encodingSchema } from './encoding.schema';
+export { encodingPresetSchema } from './preset.schema';
 
 // Layer 5: substrates
 export {
   calibrationSchema,
   substrateDescriptorSchema,
-} from 'src/schema/substrate.schema';
+} from './substrate.schema';
 
 // visualisation.json
 export {
   parseVisualisationAsset,
   visualisationAssetSchema,
-} from 'src/schema/visualisation.schema';
+} from './visualisation.schema';

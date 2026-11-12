@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { channelSchema, listOf, nonEmpty } from 'src/schema/common.schema';
-import { urlSchema } from 'src/schema/url.schema';
+import { channelSchema, listOf, nonEmpty } from './common.schema';
+import { urlSchema } from './url.schema';
 
 const channel = channelSchema.optional();
 const names = listOf(nonEmpty).min(1);

@@ -1,12 +1,12 @@
-import type { SaveOptions, VizService } from 'src/host/visualisation.types';
-import { visualisationAssetSchema } from 'src/schema/visualisation.schema';
-import type { VisualisationAsset } from 'src/visualisation/asset.types';
+import type { SaveOptions, VizService } from '../host/visualisation.types';
+import { visualisationAssetSchema } from '../schema/visualisation.schema';
+import type { VisualisationAsset } from '../visualisation/asset.types';
 import type {
   AnchorKindSpec,
   EncodingPreset,
-} from 'src/visualisation/contribution.types';
-import type { DigitalTwinSummary } from 'src/visualisation/digitalTwin.types';
-import type { SubstrateAdapter } from 'src/visualisation/substrate.types';
+} from '../visualisation/contribution.types';
+import type { DigitalTwinSummary } from '../visualisation/digitalTwin.types';
+import type { SubstrateAdapter } from '../visualisation/substrate.types';
 
 export interface FakeVizOptions {
   readonly substrates?: Readonly<Record<string, SubstrateAdapter>>;

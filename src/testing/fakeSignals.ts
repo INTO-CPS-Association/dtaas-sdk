@@ -1,20 +1,16 @@
 import type {
   ConnectionState,
   SignalsService,
-} from 'src/host/visualisation.types';
-import type { TbEntity } from 'src/visualisation/digitalTwin.types';
+} from '../host/visualisation.types';
+import type { TbEntity } from '../visualisation/digitalTwin.types';
 import type {
   Channel,
   Sampled,
   SignalSample,
   SignalSink,
-} from 'src/visualisation/signal.types';
-import createFakeConnection, {
-  type FakeConnection,
-} from 'src/testing/fakeConnection';
-import createFakePlayhead, {
-  type FakePlayhead,
-} from 'src/testing/fakePlayhead';
+} from '../visualisation/signal.types';
+import createFakeConnection, { type FakeConnection } from './fakeConnection';
+import createFakePlayhead, { type FakePlayhead } from './fakePlayhead';
 
 export interface FakeSignalsOptions {
   /** Clock used while the playhead is live. Defaults to `Date.now`. */
@@ -39,8 +35,14 @@ interface Subscription {
   readonly sink: SignalSink;
 }
 
-const toSampled = ({ value, ts, quality }: SignalSample): Sampled =>
-  quality === undefined ? { value, ts } : { value, ts, quality };
+// A field the sample does not carry is left out, so a test compares a
+// reading with exactly what it emitted.
+const toSampled = ({ value, ts, quality, unit }: SignalSample): Sampled => ({
+  value,
+  ts,
+  ...(quality === undefined ? {} : { quality }),
+  ...(unit === undefined ? {} : { unit }),
+});
 
 const latestAtOrBefore = (samples: SignalSample[], t: number) =>
   samples

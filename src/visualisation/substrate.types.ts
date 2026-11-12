@@ -1,8 +1,8 @@
 import type { z } from 'zod';
-import type { substrateDescriptorSchema } from 'src/schema/substrate.schema';
-import type { HostServices } from 'src/host/hostServices.types';
-import type { Anchor, AnchorKind } from 'src/visualisation/anchor.types';
-import type { ResolvedEncoding } from 'src/visualisation/encoding.types';
+import type { substrateDescriptorSchema } from '../schema/substrate.schema';
+import type { HostServices } from '../host/hostServices.types';
+import type { Anchor, AnchorKind } from './anchor.types';
+import type { ResolvedEncoding } from './encoding.types';
 
 export type SubstrateDescriptor = z.infer<typeof substrateDescriptorSchema>;
 

@@ -1,10 +1,10 @@
 import { type RenderOptions, waitFor } from '@testing-library/react';
 import { Route, Routes } from 'react-router-dom';
-import type { HostServices } from 'src/host/hostServices.types';
-import type { Mountable } from 'src/testing/collectMountables';
-import ConformanceBoundary from 'src/testing/ConformanceBoundary';
-import renderWithHost from 'src/testing/renderWithHost';
-import { SocketBlockedError } from 'src/testing/socketGuard';
+import type { HostServices } from '../host/hostServices.types';
+import type { Mountable } from './collectMountables';
+import ConformanceBoundary from './ConformanceBoundary';
+import renderWithHost from './renderWithHost';
+import { SocketBlockedError } from './socketGuard';
 
 const PENDING = 'data-conformance-pending';
 
